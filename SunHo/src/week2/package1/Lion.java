@@ -58,6 +58,21 @@ public class Lion {
         return true;
     }
 
+    // 출력 메서드 기능
+    public void print(){
+        if(isValid()) {
+            System.out.println("⏩️입력값 검증을 통과하여 아기사자 객체 생성을 진행합니다.");
+            System.out.println("✅아기사자 객체를 성공적으로 생성하였습니다.");
+            System.out.println("🦁아기사자 정보를 출력합니다.");
+            System.out.println("이름: " + getName() + " | " + "🎓전공: " + getMajor() + " | " + "📌기수: " + getCohort());
+        }
+    }
+
+    // 변경한 값의 출력 메서드 기능
+    public void changedPrint(){
+        System.out.println("이름: " + getName() + " | " + "🎓전공: " + getMajor() + " | " + "📌기수: " + getCohort());
+    }
+
     // Getter
     public String getName() {
         return name;
