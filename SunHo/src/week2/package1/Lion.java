@@ -32,6 +32,32 @@ public class Lion {
         cohort = scanner.nextInt();
     }
 
+    // 유효성 검사
+    public  boolean isValid() {
+        if (name.isEmpty()) {
+            System.out.println("⏩️입력값 검증을 통과하여 아기사자 객체 생성을 확인합니다.");
+            System.out.println("❌이름은 비어 있을 수 없습니다.");
+            System.out.println("❌잘못된 아기사자 정보입니다.");
+            return false;
+        }
+
+        if (major.isEmpty()) {
+            System.out.println("⏩️입력값 검증을 통과하여 아기사자 객체 생성을 확인합니다.");
+            System.out.println("❌전공은 비어 있을 수 없습니다.");
+            System.out.println("❌잘못된 아기사자 정보입니다.");
+            return false;
+        }
+
+        if (cohort <= 0) {
+            System.out.println("⏩️입력값 검증을 통과하여 아기사자 객체 생성을 확인합니다.");
+            System.out.println("❌기수는 0 이상의 정수입니다.");
+            System.out.println("❌잘못된 아기사자 정보입니다.");
+            return false;
+        }
+
+        return true;
+    }
+
     // Getter
     public String getName() {
         return name;
