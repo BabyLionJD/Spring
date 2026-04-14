@@ -13,7 +13,6 @@ public class Lion {
     // 생성자
     public Lion() {}
 
-    // Step1에서 사용 X
     public Lion(String name, String major, int cohort) {
         this.name = name;
         this.major = major;
