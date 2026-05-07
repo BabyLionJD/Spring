@@ -4,11 +4,11 @@ import class4.policy.SubmissionPolicy;
 
 public abstract class Role {
     private String name;
-    private Integer cd;
+    private int cd;
     private String major;
     private String part;
 
-    public Role(String name, Integer cd, String major, String part){
+    public Role(String name, int cd, String major, String part){
         this.name = name;
         this.cd = cd;
         this.major = major;
@@ -19,7 +19,7 @@ public abstract class Role {
         return name;
     }
 
-    public Integer getCd() {
+    public int getCd() {
         return cd;
     }
 

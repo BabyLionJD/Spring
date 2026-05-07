@@ -20,11 +20,11 @@ public class Service {
         }
 
         if (members.stream().anyMatch(m -> m.getName().equals(name))){
-            System.out.println(name + " is already exist");
+            System.out.println(name + " already exists");
         } else {
             members.add(newMember);
             System.out.println(newMember.getDetailInfo());
-            System.out.println("successfully added");
+            System.out.println("Successfully added.");
         }
 
         return members;

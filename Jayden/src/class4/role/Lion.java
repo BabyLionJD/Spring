@@ -4,20 +4,21 @@ import class4.policy.LionSubmissionPolicy;
 import class4.policy.SubmissionPolicy;
 
 public class Lion extends Role{
-    private Integer id;
+    private final int id;
+    private final SubmissionPolicy policy = new LionSubmissionPolicy();
 
-    public Lion(String name, Integer cd, String major, String part, Integer id) {
+    public Lion(String name, int cd, String major, String part, int id) {
         super(name, cd, major, part);
         this.id = id;
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
     @Override
     public SubmissionPolicy getPolicy(){
-        return new LionSubmissionPolicy();
+        return policy;
     }
 
     @Override

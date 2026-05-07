@@ -4,9 +4,10 @@ import class4.policy.StaffSubmissionPolicy;
 import class4.policy.SubmissionPolicy;
 
 public class Staff extends Role{
-    private String position;
+    private final String position;
+    private final SubmissionPolicy policy = new StaffSubmissionPolicy();
 
-    public Staff(String name, Integer cd, String major, String part, String position) {
+    public Staff(String name, int cd, String major, String part, String position) {
         super(name, cd, major, part);
         this.position = position;
     }
@@ -17,7 +18,7 @@ public class Staff extends Role{
 
     @Override
     public SubmissionPolicy getPolicy(){
-        return new StaffSubmissionPolicy();
+        return policy;
     }
 
     @Override
