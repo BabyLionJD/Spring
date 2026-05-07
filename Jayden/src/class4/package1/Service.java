@@ -10,9 +10,9 @@ public class Service {
     public List<Role> addMember(List<Role> members, String name, String role){
         Role newMember;
 
-        if (role.toLowerCase().equals("lion")){
+        if (role.equalsIgnoreCase("lion")){
             newMember = new Lion(name, 1, "Computer", "Backend", 1);
-        } else if (role.toLowerCase().equals("staff")){
+        } else if (role.equalsIgnoreCase("staff")){
             newMember = new Staff(name, 1, "Computer", "Backend", "회장");
         } else {
             System.out.println("wrong input");
