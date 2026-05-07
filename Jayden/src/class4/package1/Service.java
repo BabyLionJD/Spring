@@ -30,7 +30,7 @@ public class Service {
         return members;
     }
 
-    public void printMembers(List<Role> members){
+    public void getMembers(List<Role> members){
         members.forEach(m -> System.out.println(m.getDetailInfo()));
     }
 

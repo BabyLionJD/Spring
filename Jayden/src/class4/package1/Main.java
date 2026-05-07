@@ -1,43 +1,53 @@
 package class4.package1;
 
-import class4.role.Lion;
 import class4.role.Role;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        try (Scanner scanner = new Scanner(System.in)) {
-            Service service = new Service();
+        Scanner scanner = new Scanner(System.in);
+        Service service = new Service();
+        List<Role> members = new ArrayList<>();
 
-            List<Role> members = new ArrayList<>();
-            members.add(new Lion("Jayden", 1, "Computer", "Backend", 1));
+        while (true) {
+            System.out.println("\n1. Add Member | 2. Get All Members | 3. Search Member | 4. Exit");
+            String input = scanner.nextLine();
 
-            System.out.println("Your name? : ");
-            String name = scanner.nextLine();
+            switch (input) {
+                case "1" -> {
+                    System.out.print("Name: ");
+                    String name = scanner.nextLine();
 
-            System.out.println("lion or staff? : ");
-            String role = scanner.nextLine();
+                    System.out.print("Role (lion/staff): ");
+                    String role = scanner.nextLine();
 
-            try {
-                members = service.addMember(members, name, role);
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-            }
+                    try {
+                        service.addMember(members, name, role);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+                case "2" -> service.getMembers(members);
+                case "3" -> {
+                    System.out.print("Search name: ");
+                    String name = scanner.nextLine();
 
-            System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-
-            service.printMembers(members);
-
-            System.out.println("What is the name you are looking for? : ");
-            String name2 = scanner.nextLine();
-
-            Role found = service.searchMember(members, name2);
-            if (found != null) {
-                System.out.println(found.getDetailInfo());
-            } else {
-                System.out.println("That member doesn't exist");
+                    Role found = service.searchMember(members, name);
+                    if (found != null) {
+                        System.out.println(found.getDetailInfo());
+                    } else {
+                        System.out.println("Member not found.");
+                    }
+                }
+                case "4" -> {
+                    System.out.println("Goodbye");
+                    scanner.close();
+                    return;
+                }
+                default -> System.out.println("Invalid input.");
             }
         }
     }
