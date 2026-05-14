@@ -1,28 +1,11 @@
-package Week6.step2;
+package com.BabyLion.Spring.step2;
 
-import Week6.PblApplication;
-import Week6.role.Lion;
-import Week6.role.Role;
-import Week6.role.Staff;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.BabyLion.Spring.role.Lion;
+import com.BabyLion.Spring.role.Role;
+import com.BabyLion.Spring.role.Staff;
 
 import java.util.List;
 import java.util.Scanner;
-
-/**
- * Step 2: 의존성 주입(DI) 적용
- *
- * [핵심 학습 포인트]
- * 아래 코드에서 구현체를 바꿔보세요!
- *
- *   MemberRepository repository = new MemoryMemberRepository();  // 실제 저장
- *   MemberRepository repository = new MockMemberRepository();    // 더미 데이터
- *
- * Service 코드는 전혀 수정하지 않아도, 동작이 완전히 달라집니다.
- * → 이것이 인터페이스 기반 설계와 의존성 주입의 장점!
- */
 
 public class Main {
     public static void main(String[] args) {
@@ -40,13 +23,13 @@ public class Main {
 
         // ======= 의존성 조립 =======
         // 이 한 줄만 바꾸면 Service 코드 수정 없이 동작이 달라진다!
-        com.Week6.step2.MemberRepository repository;
+        com.BabyLion.Spring.step2.MemberRepository repository;
         if (repoChoice == 2) {
-            repository = new com.Week6.step2.MockMemberRepository();
+            repository = new com.BabyLion.Spring.step2.MockMemberRepository();
         } else {
-            repository = new com.Week6.step2.MemoryMemberRepository();
+            repository = new com.BabyLion.Spring.step2.MemoryMemberRepository();
         }
-        com.Week6.step2.MemberService service = new com.Week6.step2.MemberService(repository);
+        com.BabyLion.Spring.step2.MemberService service = new com.BabyLion.Spring.step2.MemberService(repository);
         // ==========================
 
         while (true) {
@@ -75,7 +58,7 @@ public class Main {
         System.out.println("4. 🚪 종료");
     }
 
-    private static void registerMember(Scanner scanner, com.Week6.step2.MemberService service) {
+    private static void registerMember(Scanner scanner, com.BabyLion.Spring.step2.MemberService service) {
         System.out.println("\n👤 역할 선택 (1: 아기사자, 2: 운영진): ");
         int roleChoice = readInt(scanner, "");
 
@@ -101,7 +84,7 @@ public class Main {
         }
     }
 
-    private static void showAllMembers(com.Week6.step2.MemberService service) {
+    private static void showAllMembers(com.BabyLion.Spring.step2.MemberService service) {
         System.out.println("\n📋 ===== 전체 멤버 목록 =====");
 
         if (service.isEmpty()) {
@@ -117,7 +100,7 @@ public class Main {
         System.out.println();
     }
 
-    private static void searchMember(Scanner scanner, com.Week6.step2.MemberService service) {
+    private static void searchMember(Scanner scanner, com.BabyLion.Spring.step2.MemberService service) {
         String name = readString(scanner, "\n🔍 검색할 이름: ");
         Role member = service.searchByName(name);
 

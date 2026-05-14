@@ -1,9 +1,9 @@
-package Week6.role;
+package com.BabyLion.Spring.role;
 
-import Week6.policy.StaffSubmissionPolicy;
-import Week6.policy.SubmissionPolicy;
+import com.BabyLion.Spring.policy.StaffSubmissionPolicy;
+import com.BabyLion.Spring.policy.SubmissionPolicy;
 
-public class Staff extends Role {
+public class Staff extends com.BabyLion.Spring.role.Role {
     private String position;
 
     public Staff(String name, String major, int generation, String part, String position) {

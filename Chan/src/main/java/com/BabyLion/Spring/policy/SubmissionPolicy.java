@@ -1,4 +1,4 @@
-package Week6.policy;
+package com.BabyLion.Spring.policy;
 
 public interface SubmissionPolicy {
     boolean canSubmit();

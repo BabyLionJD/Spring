@@ -1,6 +1,6 @@
-package Week6.role;
+package com.BabyLion.Spring.role;
 
-import Week6.policy.SubmissionPolicy;
+import com.BabyLion.Spring.policy.SubmissionPolicy;
 
 public abstract class Role {
     private String name;

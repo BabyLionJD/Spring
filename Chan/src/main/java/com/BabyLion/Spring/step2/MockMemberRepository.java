@@ -1,24 +1,13 @@
-package Week6.step2;
+package com.BabyLion.Spring.step2;
 
-import Week6.step2.MemberRepository;
-import Week6.role.Lion;
-import Week6.role.Role;
-import Week6.role.Staff;
+import com.BabyLion.Spring.role.Lion;
+import com.BabyLion.Spring.role.Role;
+import com.BabyLion.Spring.role.Staff;
+import com.BabyLion.Spring.step2.MemberRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 테스트/데모용 Mock 저장소
- *
- * 항상 고정된 더미 데이터를 반환한다.
- * 실제 저장은 하지 않는다.
- *
- * [학습 포인트]
- * Main에서 MemoryMemberRepository 대신 이 클래스로 교체하면,
- * Service 코드는 전혀 수정하지 않아도 동작이 달라진다.
- * → 이것이 인터페이스 기반 설계와 DI의 장점!
- */
 public class MockMemberRepository implements MemberRepository {
     private List<Role> dummyMembers;
 

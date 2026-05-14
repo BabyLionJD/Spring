@@ -1,9 +1,8 @@
-package Week6.config;
+package com.BabyLion.Spring.config;
 
-import Week6.step2.MemberService;
-import Week6.step2.MemoryMemberRepository;
+import com.BabyLion.Spring.step2.MemberService;
+import com.BabyLion.Spring.step2.MemoryMemberRepository;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 //@Configuration
 public class AppConfig {

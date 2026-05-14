@@ -1,7 +1,7 @@
-package Week6;
+package com.BabyLion.Spring;
 
-import Week6.config.AppConfig;
-import Week6.step2.MemberService;
+import com.BabyLion.Spring.config.AppConfig;
+import com.BabyLion.Spring.step2.MemberService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
