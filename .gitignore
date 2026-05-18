@@ -1,4 +1,6 @@
 HELP.md
+
+### Gradle ###
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
@@ -23,4 +25,31 @@ bin/
 *.iml
 *.ipr
 out/
-!*
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+### macOS ###
+.DS_Store
+
+### Windows ###
+Thumbs.db
+desktop.ini
+
+### Logs ###
+*.log
+logs/
+
+### Environment ###
+.env
+application-local.properties
+application-secret.yml
