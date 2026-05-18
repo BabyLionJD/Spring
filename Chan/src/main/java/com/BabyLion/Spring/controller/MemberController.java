@@ -110,6 +110,7 @@ public class MemberController {
         return ResponseEntity.status(200).body(response);
     }
 
+    @Operation(summary = "@RequestParam 검색", description = "@RequestParam을 사용하여 멤버를 검색합니다.")
     @GetMapping("/search")
     public ResponseEntity<?> searchMember(@RequestParam String name) {
         Role member = memberService.searchByName(name);
