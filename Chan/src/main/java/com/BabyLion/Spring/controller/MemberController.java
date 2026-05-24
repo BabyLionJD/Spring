@@ -1,8 +1,6 @@
 package com.BabyLion.Spring.controller;
 
-import com.BabyLion.Spring.domain.role.Lion;
-import com.BabyLion.Spring.domain.role.Role;
-import com.BabyLion.Spring.domain.role.Staff;
+import com.BabyLion.Spring.domain.Member;
 import com.BabyLion.Spring.dto.*;
 import com.BabyLion.Spring.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,8 +23,8 @@ public class MemberController {
     @PostMapping("/lions")
     public ResponseEntity<?> createLion(@RequestBody LionCreateRequest dto) {
         try {
-            Lion lion = memberService.createLion(dto);
-            LionResponse response = LionResponse.from(lion);
+            Member member = memberService.createLion(dto);
+            MemberResponse response = MemberResponse.from(member);
             return ResponseEntity.status(201).body(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(e.getMessage());
@@ -37,8 +35,8 @@ public class MemberController {
     @PostMapping("/staffs")
     public ResponseEntity<?> createStaff(@RequestBody StaffCreateRequest dto) {
         try {
-            Staff staff = memberService.createStaff(dto);
-            StaffResponse response = StaffResponse.from(staff);
+            Member member = memberService.createStaff(dto);
+            MemberResponse response = MemberResponse.from(member);
             return ResponseEntity.status(201).body(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(e.getMessage());
@@ -46,82 +44,70 @@ public class MemberController {
     }
 
     @Operation(summary = "단일 조회", description = "이름으로 멤버를 조회합니다.")
-    @GetMapping("/{name}")
-    public ResponseEntity<?> getMember(@PathVariable String name) {
-        Role member = memberService.searchByName(name);
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getMember(@PathVariable Long id) {
+        Member member = memberService.searchById(id);
         if (member == null) {
             return ResponseEntity.status(404).body("존재하지 않는 이름입니다.");
         }
-        if (member instanceof Lion) {
-            return ResponseEntity.status(200).body(LionResponse.from((Lion) member));
-        } else {
-            return ResponseEntity.status(200).body(StaffResponse.from((Staff) member));
-        }
+        return ResponseEntity.status(200).body(MemberResponse.from(member));
     }
 
 
     @Operation(summary = "Lion 수정", description = "아기사자 정보를 수정합니다.")
-    @PutMapping("/lions/{name}")
-    public ResponseEntity<?> updateLion(@PathVariable String name, @RequestBody LionUpdateRequest dto) {
+    @PutMapping("/lions/{id}")
+    public ResponseEntity<?> updateLion(@PathVariable Long id, @RequestBody LionUpdateRequest dto) {
         try {
-            Lion lion = memberService.updateLion(name, dto);
-            return ResponseEntity.status(200).body(LionResponse.from(lion));
+            Member member = memberService.updateLion(id, dto);
+            return ResponseEntity.status(200).body(MemberResponse.from(member));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(e.getMessage());
         }
     }
 
     @Operation(summary = "Staff 수정", description = "운영진 정보를 수정합니다.")
-    @PutMapping("/staffs/{name}")
-    public ResponseEntity<?> updateStaff(@PathVariable String name, @RequestBody StaffUpdateRequest dto) {
+    @PutMapping("/staffs/{id}")
+    public ResponseEntity<?> updateStaff(@PathVariable Long id, @RequestBody StaffUpdateRequest dto) {
         try {
-            Staff staff = memberService.updateStaff(name, dto);
-            return ResponseEntity.status(200).body(StaffResponse.from(staff));
+            Member member = memberService.updateStaff(id, dto);
+            return ResponseEntity.status(200).body(MemberResponse.from(member));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(e.getMessage());
         }
     }
 
     @Operation(summary = "멤버 삭제", description = "이름으로 멤버를 삭제합니다.")
-    @DeleteMapping("/{name}")
-    public ResponseEntity<?> deleteMember(@PathVariable String name) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteMember(@PathVariable Long id) {
         try {
-            memberService.deleteMember(name);
+            memberService.deleteMember(id);
             return ResponseEntity.status(200).body("삭제되었습니다.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(e.getMessage());
         }
     }
 
-    //    Lion과 Staff가 섞인 리스트를 instanceof로 분기하여 각각 LionResponse, StaffResponse로 변환한다.(보너스 과제 1)
+    //    Lion과 Staff가 섞인 리스트를 instanceof로 분기하여 각각 MemberResponse, MemberResponse로 변환한다.(보너스 과제 1)
     @Operation(summary = "전체 조회", description = "모든 멤버를 조회합니다.")
     @GetMapping("/")
     public ResponseEntity<?> getAllMembers(){
-        List<Role> members = memberService.getAllMembers();
+        List<Member> members = memberService.getAllMembers();
         List<Object> response = new ArrayList<>();
 
-        for (Role member : members) {
-            if (member instanceof Lion) {
-                response.add(LionResponse.from((Lion) member));
-            } else {
-                response.add(StaffResponse.from((Staff) member));
-            }
+        for (Member member : members) {
+            response.add(MemberResponse.from(member));
         }
         return ResponseEntity.status(200).body(response);
     }
 
-    @Operation(summary = "@RequestParam 검색", description = "@RequestParam을 사용하여 멤버를 검색합니다.")
-    @GetMapping("/search")
-    public ResponseEntity<?> searchMember(@RequestParam String name) {
-        Role member = memberService.searchByName(name);
-        if (member == null) {
-            return ResponseEntity.status(404).body("존재하지 않는 이름입니다.");
-        }
-        if (member instanceof Lion) {
-            return ResponseEntity.status(200).body(LionResponse.from((Lion) member));
-        } else {
-            return ResponseEntity.status(200).body(StaffResponse.from((Staff) member));
-        }
-    }
+//    @Operation(summary = "@RequestParam 검색", description = "@RequestParam을 사용하여 멤버를 검색합니다.")
+//    @GetMapping("/search")
+//    public ResponseEntity<?> searchMember(@RequestParam Long id) {
+//        Member member = memberService.searchById(id);
+//        if (member == null) {
+//            return ResponseEntity.status(404).body("존재하지 않는 이름입니다.");
+//        }
+//        return ResponseEntity.status(200).body(MemberResponse.from((member));
+//    }
 }
 
