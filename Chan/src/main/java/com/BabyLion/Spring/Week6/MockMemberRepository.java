@@ -1,9 +1,9 @@
-package com.BabyLion.Spring.step2;
+package com.BabyLion.Spring.Week6;
 
-import com.BabyLion.Spring.role.Lion;
-import com.BabyLion.Spring.role.Role;
-import com.BabyLion.Spring.role.Staff;
-import com.BabyLion.Spring.step2.MemberRepository;
+import com.BabyLion.Spring.domain.role.Lion;
+import com.BabyLion.Spring.domain.role.Role;
+import com.BabyLion.Spring.domain.role.Staff;
+import com.BabyLion.Spring.repository.MemberRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +20,9 @@ public class MockMemberRepository implements MemberRepository {
     }
 
     @Override
-    public void save(Role member) {
+    public Lion save(Role member) {
         System.out.println("🧪 [Mock] 저장 요청됨 (실제 저장 안 함): " + member.getName());
+        return null;
     }
 
     @Override
@@ -46,6 +47,16 @@ public class MockMemberRepository implements MemberRepository {
                 return true;
             }
         }
+        return false;
+    }
+
+    @Override
+    public void updateByName(String name, Role newMember) {
+
+    }
+
+    @Override
+    public boolean deleteByName(String name) {
         return false;
     }
 }

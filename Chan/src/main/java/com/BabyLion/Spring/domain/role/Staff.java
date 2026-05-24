@@ -1,9 +1,10 @@
-package com.BabyLion.Spring.role;
+package com.BabyLion.Spring.domain.role;
 
+import com.BabyLion.Spring.dto.LionUpdateRequest;
 import com.BabyLion.Spring.policy.StaffSubmissionPolicy;
 import com.BabyLion.Spring.policy.SubmissionPolicy;
 
-public class Staff extends com.BabyLion.Spring.role.Role {
+public class Staff extends Role {
     private String position;
 
     public Staff(String name, String major, int generation, String part, String position) {
@@ -29,4 +30,12 @@ public class Staff extends com.BabyLion.Spring.role.Role {
     public String getInfo() {
         return "📌 이름: " + getName() + " | 🎓 전공: " + getMajor() + " | 🔢 기수: " + getGeneration() + " | 💻 파트: " + getPart() + "\n⭐ 직책: " + position;
     }
+
+    public void update(String major, int generation, String part, String position) {
+        setMajor(major);
+        setGeneration(generation);
+        setPart(part);
+        this.position = position;
+    }
+
 }

@@ -1,7 +1,7 @@
 package com.BabyLion.Spring.config;
 
-import com.BabyLion.Spring.step2.MemberService;
-import com.BabyLion.Spring.step2.MemoryMemberRepository;
+import com.BabyLion.Spring.service.MemberService;
+import com.BabyLion.Spring.repository.MemoryMemberRepository;
 import org.springframework.context.annotation.Bean;
 
 //@Configuration

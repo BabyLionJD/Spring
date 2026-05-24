@@ -1,7 +1,7 @@
 package com.BabyLion.Spring;
 
 import com.BabyLion.Spring.config.AppConfig;
-import com.BabyLion.Spring.step2.MemberService;
+import com.BabyLion.Spring.service.MemberService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;

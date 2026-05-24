@@ -1,7 +1,6 @@
-package com.BabyLion.Spring.step2;
+package com.BabyLion.Spring.repository;
 
-import com.BabyLion.Spring.role.Role;
-import com.BabyLion.Spring.step2.MemberRepository;
+import com.BabyLion.Spring.domain.role.Role;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -12,8 +11,9 @@ public class MemoryMemberRepository implements MemberRepository {
     private List<Role> members = new ArrayList<>();
 
     @Override
-    public void save(Role member) {
+    public <T extends Role> T save(T member) {
         members.add(member);
+        return member;
     }
 
     @Override
@@ -40,4 +40,26 @@ public class MemoryMemberRepository implements MemberRepository {
         }
         return false;
     }
+
+
+    @Override
+    public void updateByName(String name, Role newMember) {
+        for (int i = 0; i < members.size(); i++) {
+            if (members.get(i).getName().equals(name)) {
+                members.set(i, newMember);
+                return;
+            }
+        }
+    }
+
+
+    @Override
+    public boolean deleteByName(String name) {
+        return members.removeIf(member -> member.getName().equals(name));
+    }
+
+//    @Override
+//    public boolean existsByname(String name) {
+//        return false;
+//    }
 }

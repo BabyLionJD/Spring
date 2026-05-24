@@ -1,8 +1,11 @@
-package com.BabyLion.Spring.step2;
+package com.BabyLion.Spring.Week6;
 
-import com.BabyLion.Spring.role.Lion;
-import com.BabyLion.Spring.role.Role;
-import com.BabyLion.Spring.role.Staff;
+import com.BabyLion.Spring.repository.MemberRepository;
+import com.BabyLion.Spring.repository.MemoryMemberRepository;
+import com.BabyLion.Spring.domain.role.Lion;
+import com.BabyLion.Spring.domain.role.Role;
+import com.BabyLion.Spring.domain.role.Staff;
+import com.BabyLion.Spring.service.MemberService;
 
 import java.util.List;
 import java.util.Scanner;
@@ -23,13 +26,13 @@ public class Main {
 
         // ======= 의존성 조립 =======
         // 이 한 줄만 바꾸면 Service 코드 수정 없이 동작이 달라진다!
-        com.BabyLion.Spring.step2.MemberRepository repository;
+        MemberRepository repository;
         if (repoChoice == 2) {
-            repository = new com.BabyLion.Spring.step2.MockMemberRepository();
+            repository = new com.BabyLion.Spring.Week6.MockMemberRepository();
         } else {
-            repository = new com.BabyLion.Spring.step2.MemoryMemberRepository();
+            repository = new MemoryMemberRepository();
         }
-        com.BabyLion.Spring.step2.MemberService service = new com.BabyLion.Spring.step2.MemberService(repository);
+        MemberService service = new MemberService(repository);
         // ==========================
 
         while (true) {
@@ -58,7 +61,7 @@ public class Main {
         System.out.println("4. 🚪 종료");
     }
 
-    private static void registerMember(Scanner scanner, com.BabyLion.Spring.step2.MemberService service) {
+    private static void registerMember(Scanner scanner, MemberService service) {
         System.out.println("\n👤 역할 선택 (1: 아기사자, 2: 운영진): ");
         int roleChoice = readInt(scanner, "");
 
@@ -84,7 +87,7 @@ public class Main {
         }
     }
 
-    private static void showAllMembers(com.BabyLion.Spring.step2.MemberService service) {
+    private static void showAllMembers(MemberService service) {
         System.out.println("\n📋 ===== 전체 멤버 목록 =====");
 
         if (service.isEmpty()) {
@@ -100,7 +103,7 @@ public class Main {
         System.out.println();
     }
 
-    private static void searchMember(Scanner scanner, com.BabyLion.Spring.step2.MemberService service) {
+    private static void searchMember(Scanner scanner, MemberService service) {
         String name = readString(scanner, "\n🔍 검색할 이름: ");
         Role member = service.searchByName(name);
 

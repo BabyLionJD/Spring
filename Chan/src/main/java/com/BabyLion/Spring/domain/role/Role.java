@@ -1,4 +1,4 @@
-package com.BabyLion.Spring.role;
+package com.BabyLion.Spring.domain.role;
 
 import com.BabyLion.Spring.policy.SubmissionPolicy;
 
@@ -40,4 +40,9 @@ public abstract class Role {
     public abstract String roleName();
 
     public abstract String getInfo();
+
+    protected void setMajor(String major) { this.major = major; }
+    protected void setGeneration(int generation) { this.generation = generation; }
+    protected void setPart(String part) { this.part = part; }
+
 }
