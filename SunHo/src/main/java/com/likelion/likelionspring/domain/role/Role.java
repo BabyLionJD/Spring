@@ -1,6 +1,5 @@
-package com.likelion.likelionspring.role;
+package com.likelion.likelionspring.domain.role;
 
-import com.likelion.likelionspring.policy.SubmissionPolicy;
 
 public abstract class Role {
     private String name;
@@ -31,13 +30,14 @@ public abstract class Role {
         return part;
     }
 
-    public abstract SubmissionPolicy submissionPolicy();
-
-    public boolean canSubmitAssignment() {
-        return submissionPolicy().canSubmit();
-    }
-
     public abstract String roleName();
 
     public abstract String getInfo();
+
+    // claude의 도움을 받음
+    protected void updateCommon(String major, int generation, String part) {
+        this.major = major;
+        this.generation = generation;
+        this.part = part;
+    }
 }
