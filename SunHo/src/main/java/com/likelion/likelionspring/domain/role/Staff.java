@@ -1,8 +1,4 @@
-package com.likelion.likelionspring.role;
-
-import com.likelion.likelionspring.policy.StaffSubmissionPolicy;
-import com.likelion.likelionspring.policy.SubmissionPolicy;
-
+package com.likelion.likelionspring.domain.role;
 
 public class Staff extends Role {
     private String position;
@@ -12,13 +8,8 @@ public class Staff extends Role {
         this.position = position;
     }
 
-    public String getPosition() {
-        return position;
-    }
-
-    @Override
-    public SubmissionPolicy submissionPolicy() {
-        return new StaffSubmissionPolicy();
+    public String getRoleName() {
+        return roleName();
     }
 
     @Override
@@ -29,5 +20,15 @@ public class Staff extends Role {
     @Override
     public String getInfo() {
         return "📌 이름: " + getName() + " | 🎓 전공: " + getMajor() + " | 🔢 기수: " + getGeneration() + " | 💻 파트: " + getPart() + "\n⭐ 직책: " + position;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    // claude의 도움을 받음
+    public void update(String major, int generation, String part, String position) {
+        updateCommon(major, generation, part);
+        this.position = position;
     }
 }

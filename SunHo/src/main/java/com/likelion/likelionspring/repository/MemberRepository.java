@@ -1,6 +1,6 @@
 package com.likelion.likelionspring.repository;
 
-import com.likelion.likelionspring.role.Role;
+import com.likelion.likelionspring.domain.role.Role;
 
 import java.util.List;
 
