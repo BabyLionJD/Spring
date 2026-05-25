@@ -32,6 +32,7 @@ public class MemberService {
         }
 
         Member member = new Member(
+                null,
                 dto.getName(),
                 dto.getMajor(),
                 dto.getPart(),
@@ -46,6 +47,7 @@ public class MemberService {
     public Member createStaff(StaffCreateRequest dto){
 
         Member member = new Member(
+                null,
                 dto.getName(),
                 dto.getMajor(),
                 dto.getPart(),
