@@ -1,19 +1,9 @@
 package com.likelion.likelionspring.repository;
 
-import com.likelion.likelionspring.domain.role.Role;
+import com.likelion.likelionspring.domain.Member;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+public interface MemberRepository extends JpaRepository<Member, Long> {
 
-/**
- * 멤버 저장소 인터페이스
- *
- * 저장소를 인터페이스로 추상화하면:
- * - 구현체를 자유롭게 교체할 수 있다 (메모리, 파일, DB 등)
- * - Service는 인터페이스에만 의존하므로 구현체가 바뀌어도 수정할 필요 없다
- */
-public interface MemberRepository {
-    void save(Role member);
-    Role findByName(String name);
-    List<Role> findAll();
-    boolean existsByName(String name);
+    Member findByName(String name);
 }
