@@ -1,6 +1,6 @@
-package com.BabyLion.Spring.dto;
+package com.BabyLion.Spring.member.dto;
 
-import com.BabyLion.Spring.domain.Member;
+import com.BabyLion.Spring.member.domain.Member;
 import lombok.Getter;
 
 @Getter

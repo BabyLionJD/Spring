@@ -1,15 +1,18 @@
-package com.BabyLion.Spring.domain;
+package com.BabyLion.Spring.member.domain;
 
+import com.BabyLion.Spring.assignment.domain.Assignment;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // JPA 내부에서만 쓰도록 protected
-@AllArgsConstructor
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,20 +23,21 @@ public class Member {
     RoleType roleType;
     String studentId;
     String position;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Assignment> assignments = new ArrayList<>();
 
     //id는 자동 생성하므로 생성자에서 제외(GenerateValue)
-//    public Member(String name, String major, String part, int generation, RoleType roleType, String studentId, String position) {
-//        this.name = name;
-//        this.major = major;
-//        this.part = part;
-//        this.generation = generation;
-//        this.roleType = roleType;
-//        this.studentId = studentId;
-//        this.position = position;
-//    }
+    public Member(String name, String major, String part, int generation, RoleType roleType, String studentId, String position) {
+        this.name = name;
+        this.major = major;
+        this.part = part;
+        this.generation = generation;
+        this.roleType = roleType;
+        this.studentId = studentId;
+        this.position = position;
+    }
 
 //    protected Member() {}
-//    JPA가 DB에서 데이터를 꺼낼 때 빈 객체를 먼저 만들고 값을 채우는 방식을 사용하므로 필요 (롬복 어노테이션으로 대체)
 
     public void updateInfo(String name, String major, String part, int generation){
         this.name = name;

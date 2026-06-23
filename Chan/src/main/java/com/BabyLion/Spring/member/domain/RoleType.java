@@ -1,4 +1,4 @@
-package com.BabyLion.Spring.domain;
+package com.BabyLion.Spring.member.domain;
 
 public enum RoleType {
     LION("아기사자"),
