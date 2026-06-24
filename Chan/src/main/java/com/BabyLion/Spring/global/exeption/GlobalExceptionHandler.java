@@ -1,5 +1,6 @@
 package com.BabyLion.Spring.global.exeption;
 
+import com.BabyLion.Spring.global.dto.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -10,22 +11,42 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MemberNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleMemberNotFoundException(MemberNotFoundException e) {
+    public ResponseEntity<ErrorResponse> handleMemberNotFoundException(MemberNotFoundException e) {
         return ResponseEntity
                 .status(e.getErrorCode().getStatus())
-                .body(Map.of(
-                        "status", e.getErrorCode().getStatus(),
-                        "message", e.getErrorCode().getMessage()
+                .body(new ErrorResponse(
+                        e.getErrorCode().getStatus(),
+                        e.getErrorCode().getMessage()
                 ));
     }
 
     @ExceptionHandler(InvalidStudentIdException.class)
-    public ResponseEntity<Map<String, Object>> handleInvalidStudentId(InvalidStudentIdException e) {
+    public ResponseEntity<ErrorResponse> handleInvalidStudentId(InvalidStudentIdException e) {
         return ResponseEntity
                 .status(e.getErrorCode().getStatus())
-                .body(Map.of(
-                        "status", e.getErrorCode().getStatus(),
-                        "message", e.getErrorCode().getMessage()
+                .body(new ErrorResponse(
+                        e.getErrorCode().getStatus(),
+                        e.getErrorCode().getMessage()
+                ));
+    }
+
+    @ExceptionHandler(AssignmentNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleAssignmentNotFound(AssignmentNotFoundException e) {
+        return ResponseEntity
+                .status(e.getErrorCode().getStatus())
+                .body(new ErrorResponse(
+                        e.getErrorCode().getStatus(),
+                        e.getErrorCode().getMessage()
+                ));
+    }
+
+    @ExceptionHandler(DuplicateMemberException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateMember(DuplicateMemberException e) {
+        return ResponseEntity
+                .status(e.getErrorCode().getStatus())
+                .body(new ErrorResponse(
+                        e.getErrorCode().getStatus(),
+                        e.getErrorCode().getMessage()
                 ));
     }
 }

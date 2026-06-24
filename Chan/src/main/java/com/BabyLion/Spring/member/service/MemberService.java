@@ -6,7 +6,7 @@ import com.BabyLion.Spring.member.dto.LionCreateRequest;
 import com.BabyLion.Spring.member.dto.LionUpdateRequest;
 import com.BabyLion.Spring.member.dto.StaffCreateRequest;
 import com.BabyLion.Spring.member.dto.StaffUpdateRequest;
-import com.BabyLion.Spring.global.exeption.ErrorCode;
+import com.BabyLion.Spring.global.exeption.ErrorCodeEnum;
 import com.BabyLion.Spring.global.exeption.InvalidStudentIdException;
 import com.BabyLion.Spring.global.exeption.MemberNotFoundException;
 import com.BabyLion.Spring.member.repository.MemberRepository;
@@ -31,7 +31,7 @@ public class MemberService {
     @Transactional
     public Member createLion(LionCreateRequest dto){
         if (!dto.getStudentId().matches("[0-9]+")){
-            throw new InvalidStudentIdException(ErrorCode.INVALID_STUDENT_ID);
+            throw new InvalidStudentIdException(ErrorCodeEnum.INVALID_STUDENT_ID);
         }
 
         Member member = new Member(
@@ -63,7 +63,7 @@ public class MemberService {
     @Transactional
     public Member updateLion(Long id, LionUpdateRequest dto) {
         Member member = repository.findById(id)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCodeEnum.MEMBER_NOT_FOUND));
         member.updateInfo(dto.getName(), dto.getMajor(), dto.getPart(), dto.getGeneration());
         member.updateStudentID(dto.getStudentId());
         return repository.save(member);
@@ -72,7 +72,7 @@ public class MemberService {
     @Transactional
     public Member updateStaff(Long id, StaffUpdateRequest dto) {
         Member member = repository.findById(id)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCodeEnum.MEMBER_NOT_FOUND));
         member.updateInfo(dto.getName(), dto.getMajor(), dto.getPart(), dto.getGeneration());
         member.updatePosition(dto.getPosition());
         return repository.save(member);
@@ -81,13 +81,13 @@ public class MemberService {
     @Transactional
     public void deleteMember(Long id) {
         Member member = repository.findById(id)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCodeEnum.MEMBER_NOT_FOUND));
         repository.delete(member);
     }
 
     public Member searchById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCodeEnum.MEMBER_NOT_FOUND));
     }
 
     public List<Member> getAllMembers() {

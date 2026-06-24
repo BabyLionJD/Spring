@@ -1,12 +1,12 @@
 package com.BabyLion.Spring.global.exeption;
 
 public class InvalidStudentIdException extends RuntimeException{
-    private final ErrorCode errorCode;
+    private final ErrorCodeEnum errorCode;
 
-    public InvalidStudentIdException(ErrorCode errorCode) {
+    public InvalidStudentIdException(ErrorCodeEnum errorCode) {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
 
-    public ErrorCode getErrorCode() { return errorCode; }
+    public ErrorCodeEnum getErrorCode() { return errorCode; }
 }
