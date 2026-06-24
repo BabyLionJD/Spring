@@ -5,9 +5,9 @@ INSERT INTO member (name, major, part, generation, role_type, student_id, positi
                                                                                         ('박지민', '컴퓨터공학과', '백엔드', 8, 'STAFF', NULL, '운영진'),
                                                                                         ('최수연', '소프트웨어학과', '프론트엔드', 8, 'STAFF', NULL, '회장');
 INSERT INTO member (name, major, part, generation, role_type, student_id, position) VALUES
-                                                                                        ('정다은', '전자공학과', 'Backend', 9, 'LION', '20233456', NULL),
-                                                                                        ('강민준', '산업공학과', 'Frontend', 9, 'LION', '20237890', NULL),
-                                                                                        ('윤서아', '데이터사이언스학과', 'Backend', 9, 'LION', '20234567', NULL);
+                                                                                        ('정다은', '전자공학과', '백엔드', 9, 'LION', '20233456', NULL),
+                                                                                        ('강민준', '산업공학과', '프론트엔드', 9, 'LION', '20237890', NULL),
+                                                                                        ('윤서아', '데이터사이언스학과', '백엔드', 9, 'LION', '20234567', NULL);
 INSERT INTO assignment (title, description, member_id) VALUES
                                                            ('1주차 - OOP 기초', '클래스, 객체, 캡슐화 개념 학습 및 실습', 1),
                                                            ('2주차 - 상속과 다형성', '상속 구조 설계 및 다형성 활용 실습', 1),

@@ -47,4 +47,24 @@ public class GlobalExceptionHandler {
                         e.getErrorCode().getMessage()
                 ));
     }
+
+    @ExceptionHandler(EmptyNameException.class)
+    public ResponseEntity<ErrorResponse> handleEmptyName(EmptyNameException e) {
+        return ResponseEntity
+                .status(e.getErrorCode().getStatus())
+                .body(new ErrorResponse(
+                        e.getErrorCode().getStatus(),
+                        e.getErrorCode().getMessage()
+                ));
+    }
+
+    @ExceptionHandler(InvalidGenerationException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidGeneration(InvalidGenerationException e) {
+        return ResponseEntity
+                .status(e.getErrorCode().getStatus())
+                .body(new ErrorResponse(
+                        e.getErrorCode().getStatus(),
+                        e.getErrorCode().getMessage()
+                ));
+    }
 }

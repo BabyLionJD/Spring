@@ -65,7 +65,7 @@ public class MemberController {
     }
 
     @Operation(summary = "전체 조회", description = "모든 멤버를 조회합니다.")
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<?> getAllMembers(@RequestParam(required = false) String part){
         List<Member> members;
         if (part == null) {

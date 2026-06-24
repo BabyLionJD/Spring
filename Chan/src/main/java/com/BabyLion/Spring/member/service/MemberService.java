@@ -1,15 +1,12 @@
 package com.BabyLion.Spring.member.service;
 
-import com.BabyLion.Spring.global.exeption.DuplicateMemberException;
+import com.BabyLion.Spring.global.exeption.*;
 import com.BabyLion.Spring.member.domain.Member;
 import com.BabyLion.Spring.member.domain.RoleType;
 import com.BabyLion.Spring.member.dto.LionCreateRequest;
 import com.BabyLion.Spring.member.dto.LionUpdateRequest;
 import com.BabyLion.Spring.member.dto.StaffCreateRequest;
 import com.BabyLion.Spring.member.dto.StaffUpdateRequest;
-import com.BabyLion.Spring.global.exeption.ErrorCodeEnum;
-import com.BabyLion.Spring.global.exeption.InvalidStudentIdException;
-import com.BabyLion.Spring.global.exeption.MemberNotFoundException;
 import com.BabyLion.Spring.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +32,10 @@ public class MemberService {
             throw new InvalidStudentIdException(ErrorCodeEnum.INVALID_STUDENT_ID);
         } else if (repository.existsByName(dto.getName())) {
             throw new DuplicateMemberException(ErrorCodeEnum.DUPLICATE_MEMBER_NAME);
+        } else if(dto.getName().isEmpty()){
+            throw new EmptyNameException(ErrorCodeEnum.EMPTY_NAME);
+        } else if (dto.getGeneration() <= 0) {
+            throw new InvalidGenerationException(ErrorCodeEnum.INVALID_GENERATION);
         }
 
         Member member = new Member(
@@ -71,7 +72,7 @@ public class MemberService {
     public Member updateLion(Long id, LionUpdateRequest dto) {
         Member member = repository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException(ErrorCodeEnum.MEMBER_NOT_FOUND));
-        member.updateInfo(dto.getName(), dto.getMajor(), dto.getPart(), dto.getGeneration());
+        member.updateInfo(member.getName(), dto.getMajor(), dto.getPart(), dto.getGeneration());
         member.updateStudentID(dto.getStudentId());
         return repository.save(member);
     }
@@ -80,7 +81,7 @@ public class MemberService {
     public Member updateStaff(Long id, StaffUpdateRequest dto) {
         Member member = repository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException(ErrorCodeEnum.MEMBER_NOT_FOUND));
-        member.updateInfo(dto.getName(), dto.getMajor(), dto.getPart(), dto.getGeneration());
+        member.updateInfo(member.getName(), dto.getMajor(), dto.getPart(), dto.getGeneration());
         member.updatePosition(dto.getPosition());
         return repository.save(member);
     }
