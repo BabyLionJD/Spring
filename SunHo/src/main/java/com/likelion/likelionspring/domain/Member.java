@@ -1,14 +1,18 @@
 package com.likelion.likelionspring.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.likelion.likelionspring.assignment.domain.Assignment;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Member {
+
+    @OneToMany(mappedBy = "member",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true)
+    List<Assignment> assignmentList = new ArrayList<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
