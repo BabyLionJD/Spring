@@ -1,21 +1,23 @@
-package com.BabyLion.Spring.service;
+package com.BabyLion.Spring.member.service;
 
-import com.BabyLion.Spring.domain.Member;
-import com.BabyLion.Spring.domain.RoleType;
-import com.BabyLion.Spring.dto.LionCreateRequest;
-import com.BabyLion.Spring.dto.LionUpdateRequest;
-import com.BabyLion.Spring.dto.StaffCreateRequest;
-import com.BabyLion.Spring.dto.StaffUpdateRequest;
+import com.BabyLion.Spring.member.domain.Member;
+import com.BabyLion.Spring.member.domain.RoleType;
+import com.BabyLion.Spring.member.dto.LionCreateRequest;
+import com.BabyLion.Spring.member.dto.LionUpdateRequest;
+import com.BabyLion.Spring.member.dto.StaffCreateRequest;
+import com.BabyLion.Spring.member.dto.StaffUpdateRequest;
 import com.BabyLion.Spring.exeption.ErrorCode;
 import com.BabyLion.Spring.exeption.InvalidStudentIdException;
 import com.BabyLion.Spring.exeption.MemberNotFoundException;
-import com.BabyLion.Spring.repository.MemberRepository;
+import com.BabyLion.Spring.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class MemberService {
     // 인터페이스에 의존 (구현체에 의존하지 않음)
     private final MemberRepository repository;
@@ -26,13 +28,13 @@ public class MemberService {
         this.repository = repository;
     }
 
+    @Transactional
     public Member createLion(LionCreateRequest dto){
         if (!dto.getStudentId().matches("[0-9]+")){
             throw new InvalidStudentIdException(ErrorCode.INVALID_STUDENT_ID);
         }
 
         Member member = new Member(
-                null,
                 dto.getName(),
                 dto.getMajor(),
                 dto.getPart(),
@@ -44,10 +46,10 @@ public class MemberService {
         return repository.save(member);
     }
 
+    @Transactional
     public Member createStaff(StaffCreateRequest dto){
 
         Member member = new Member(
-                null,
                 dto.getName(),
                 dto.getMajor(),
                 dto.getPart(),
@@ -58,7 +60,7 @@ public class MemberService {
         return repository.save(member);
     }
 
-
+    @Transactional
     public Member updateLion(Long id, LionUpdateRequest dto) {
         Member member = repository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
@@ -67,7 +69,7 @@ public class MemberService {
         return repository.save(member);
     }
 
-
+    @Transactional
     public Member updateStaff(Long id, StaffUpdateRequest dto) {
         Member member = repository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
@@ -76,6 +78,7 @@ public class MemberService {
         return repository.save(member);
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         Member member = repository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));

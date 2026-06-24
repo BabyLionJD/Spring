@@ -1,4 +1,4 @@
-package com.BabyLion.Spring.dto;
+package com.BabyLion.Spring.member.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

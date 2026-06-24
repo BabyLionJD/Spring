@@ -1,8 +1,8 @@
-package com.BabyLion.Spring.controller;
+package com.BabyLion.Spring.member.controller;
 
-import com.BabyLion.Spring.domain.Member;
-import com.BabyLion.Spring.dto.*;
-import com.BabyLion.Spring.service.MemberService;
+import com.BabyLion.Spring.member.domain.Member;
+import com.BabyLion.Spring.member.dto.*;
+import com.BabyLion.Spring.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
