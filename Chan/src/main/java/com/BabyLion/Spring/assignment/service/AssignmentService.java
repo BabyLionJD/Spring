@@ -4,15 +4,12 @@ import com.BabyLion.Spring.assignment.domain.Assignment;
 import com.BabyLion.Spring.assignment.dto.AssignmentCreateRequest;
 import com.BabyLion.Spring.assignment.dto.AssignmentUpdateRequest;
 import com.BabyLion.Spring.assignment.repository.AssignmentRepository;
-import com.BabyLion.Spring.exeption.ErrorCode;
-import com.BabyLion.Spring.exeption.MemberNotFoundException;
 import com.BabyLion.Spring.member.domain.Member;
 import com.BabyLion.Spring.member.repository.MemberRepository;
 import com.BabyLion.Spring.member.service.MemberService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

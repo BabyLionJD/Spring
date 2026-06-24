@@ -1,9 +1,9 @@
-package com.BabyLion.Spring.exeption;
+package com.BabyLion.Spring.global.exeption;
 
-public class MemberNotFoundException extends RuntimeException {
+public class InvalidStudentIdException extends RuntimeException{
     private final ErrorCode errorCode;
 
-    public MemberNotFoundException(ErrorCode errorCode) {
+    public InvalidStudentIdException(ErrorCode errorCode) {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
     }

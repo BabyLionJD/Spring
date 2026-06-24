@@ -1,4 +1,4 @@
-package com.BabyLion.Spring.exeption;
+package com.BabyLion.Spring.global.exeption;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
