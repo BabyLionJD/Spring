@@ -65,4 +65,8 @@ public class AssignmentService {
     public void deleteAssignment(Long id){
         assignmentRepository.deleteById(id);
     }
+
+    public List<Assignment> searchByTitle(String keyword) {
+        return assignmentRepository.findByTitleContaining(keyword);
+    }
 }

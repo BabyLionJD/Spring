@@ -84,5 +84,15 @@ public class AssignmentController {
             return ResponseEntity.status(404).build();
         }
     }
+
+    @Operation(summary = "과제 제목 검색", description = "제목에 특정 키워드가 포함된 과제를 검색합니다.")
+    @GetMapping("/assignments/search")
+    public ResponseEntity<?> searchAssignments(@RequestParam String keyword) {
+        List<Assignment> assignments = assignmentService.searchByTitle(keyword);
+        List<AssignmentResponse> responses = assignments.stream()
+                .map(AssignmentResponse::from)
+                .toList();
+        return ResponseEntity.ok(responses);
+    }
 }
 
