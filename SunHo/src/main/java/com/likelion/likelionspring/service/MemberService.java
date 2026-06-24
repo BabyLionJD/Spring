@@ -8,8 +8,10 @@ import com.likelion.likelionspring.dto.StaffCreateRequest;
 import com.likelion.likelionspring.dto.StaffUpdateRequest;
 import com.likelion.likelionspring.repository.MemberRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class MemberService {
 
     private final MemberRepository memberRepository;
@@ -19,6 +21,7 @@ public class MemberService {
     }
 
     // Lion 생성
+    @Transactional
     public Member createLion(LionCreateRequest request) {
         Member member = new Member(
                 request.getName(), request.getMajor(), request.getGeneration(),
@@ -28,6 +31,7 @@ public class MemberService {
     }
 
     // Staff 생성
+    @Transactional
     public Member createStaff(StaffCreateRequest request) {
         Member member = new Member(
                 request.getName(), request.getMajor(), request.getGeneration(),
@@ -37,6 +41,7 @@ public class MemberService {
     }
 
     // Lion 수정
+    @Transactional
     public Member updateLion(Long id, LionUpdateRequest request) {
         Member member = memberRepository.findById(id).orElse(null);
         if (member == null) {
@@ -48,6 +53,7 @@ public class MemberService {
     }
 
     // Staff 수정
+    @Transactional
     public Member updateStaff(Long id, StaffUpdateRequest request) {
         Member member = memberRepository.findById(id).orElse(null);
         if (member == null) {
@@ -59,6 +65,7 @@ public class MemberService {
     }
 
     // 삭제
+    @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
