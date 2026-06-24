@@ -1,5 +1,6 @@
 package com.BabyLion.Spring.member.service;
 
+import com.BabyLion.Spring.global.exeption.DuplicateMemberException;
 import com.BabyLion.Spring.member.domain.Member;
 import com.BabyLion.Spring.member.domain.RoleType;
 import com.BabyLion.Spring.member.dto.LionCreateRequest;
@@ -32,6 +33,8 @@ public class MemberService {
     public Member createLion(LionCreateRequest dto){
         if (!dto.getStudentId().matches("[0-9]+")){
             throw new InvalidStudentIdException(ErrorCodeEnum.INVALID_STUDENT_ID);
+        } else if (repository.existsByName(dto.getName())) {
+            throw new DuplicateMemberException(ErrorCodeEnum.DUPLICATE_MEMBER_NAME);
         }
 
         Member member = new Member(
@@ -48,6 +51,10 @@ public class MemberService {
 
     @Transactional
     public Member createStaff(StaffCreateRequest dto){
+
+        if(repository.existsByName(dto.getName())){
+            throw new DuplicateMemberException(ErrorCodeEnum.DUPLICATE_MEMBER_NAME);
+        }
 
         Member member = new Member(
                 dto.getName(),
@@ -94,4 +101,7 @@ public class MemberService {
         return repository.findAll();
     }
 
+    public List<Member> findByPart(String part){
+        return repository.findByPart(part);
+    }
 }

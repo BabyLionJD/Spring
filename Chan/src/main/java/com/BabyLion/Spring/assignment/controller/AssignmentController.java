@@ -31,20 +31,14 @@ public class AssignmentController {
     @PostMapping("/members/{memberId}/assignments")
     public ResponseEntity<?> createAssignment(@PathVariable Long memberId,@RequestBody AssignmentCreateRequest dto) {
         Assignment assignment = assignmentService.createAssignment(memberId, dto);
-        if (assignment == null) {
-            return ResponseEntity.status(404).build();
-        }
         AssignmentResponse response = AssignmentResponse.from(assignment);
         return ResponseEntity.status(201).body(response);
     }
 
-    @Operation(summary = "과제 목록 조회", description = "과제목록를 조회합니다.")
+    @Operation(summary = "멤버별 과제 목록 조회", description = "멤버별 과제목록를 조회합니다.")
     @GetMapping("/members/{memberId}/assignments")
     public ResponseEntity<?> getAssignmentsByMember(@PathVariable Long memberId) {
         List<Assignment> assignments = assignmentService.memberAssignment(memberId);
-        if (assignments == null) {
-            return ResponseEntity.status(404).build();
-        }
         List<AssignmentResponse> responses = new ArrayList<>();
         for (Assignment a : assignments) {
             responses.add(AssignmentResponse.from(a));
@@ -56,20 +50,24 @@ public class AssignmentController {
     @GetMapping("/assignments/{id}")
     public ResponseEntity<?> getAssignment(@PathVariable Long id) {
         Assignment assignment = assignmentService.searchAssignment(id);
-        if (assignment == null) {
-            return ResponseEntity.status(404).build();
-        }
         AssignmentResponse response = AssignmentResponse.from(assignment);
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "전체 과제 조회", description = "전체 과제들을 조회합니다.")
+    @GetMapping("/assignments")
+    public ResponseEntity<?> getAllAssignment(){
+        List<Assignment> assignments = assignmentService.getAllAssignments();
+        List<AssignmentResponse> responses = assignments.stream()
+                .map(AssignmentResponse::from)
+                .toList();
+        return ResponseEntity.ok(responses);
     }
 
     @Operation(summary = "과제 수정", description = "과제를 수정합니다.")
     @PutMapping("/assignments/{id}")
     public ResponseEntity<?> updateAssignment(@PathVariable Long id, @RequestBody AssignmentUpdateRequest dto) {
         Assignment assignment = assignmentService.updateAssignment(id, dto);
-        if (assignment == null) {
-            return ResponseEntity.status(404).build();
-        }
         AssignmentResponse response = AssignmentResponse.from(assignment);
         return ResponseEntity.ok(response);
     }
@@ -77,12 +75,8 @@ public class AssignmentController {
     @Operation(summary = "과제 삭제", description = "과제를 삭제합니다.")
     @DeleteMapping("/assignments/{id}")
     public ResponseEntity<?> deleteAssignment(@PathVariable Long id) {
-        try {
-            assignmentService.deleteAssignment(id);
-            return ResponseEntity.status(204).build();
-        } catch (EmptyResultDataAccessException e) {
-            return ResponseEntity.status(404).build();
-        }
+        assignmentService.deleteAssignment(id);
+        return ResponseEntity.status(204).build();
     }
 
     @Operation(summary = "과제 제목 검색", description = "제목에 특정 키워드가 포함된 과제를 검색합니다.")
