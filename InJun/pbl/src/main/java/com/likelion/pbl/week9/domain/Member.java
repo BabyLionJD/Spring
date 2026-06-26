@@ -24,7 +24,7 @@ public class Member {
     private String studentId;
     private String position;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Assignment> assignments = new ArrayList<>();
 
     protected Member() {

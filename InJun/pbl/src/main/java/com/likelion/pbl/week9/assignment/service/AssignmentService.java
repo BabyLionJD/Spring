@@ -64,4 +64,8 @@ public class AssignmentService {
         assignmentRepository.deleteById(id);
         return true;
     }
+
+    public List<Assignment> searchByTitle(String title) {
+        return assignmentRepository.searchByTitle(title);
+    }
 }

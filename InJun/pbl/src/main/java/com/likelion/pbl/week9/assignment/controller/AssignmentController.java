@@ -84,4 +84,16 @@ public class AssignmentController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/assignments")
+    public ResponseEntity<List<AssignmentResponse>> searchAssignments(
+            @RequestParam String title
+    ) {
+        List<AssignmentResponse> responses = assignmentService.searchByTitle(title)
+                .stream()
+                .map(AssignmentResponse::from)
+                .toList();
+
+        return ResponseEntity.ok(responses);
+    }
 }
