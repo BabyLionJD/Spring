@@ -63,20 +63,21 @@
             </div>
             <table>
                 <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>이름</th>
-                        <th>전공</th>
-                        <th>기수</th>
-                        <th>파트</th>
-                        <th>역할</th>
-                        <th>관리</th>
-                    </tr>
+                <tr>
+                    <th>ID</th>
+                    <th>이름</th>
+                    <th>전공</th>
+                    <th>기수</th>
+                    <th>파트</th>
+                    <th>역할</th>
+                    <th>관리</th>
+                </tr>
                 </thead>
                 <tbody id="memberTableBody">
-                    <tr><td colspan="7" class="empty-msg">로딩 중...</td></tr>
+                <tr><td colspan="7" class="empty-msg">로딩 중...</td></tr>
                 </tbody>
             </table>
+            <div id="memberPagination" style="margin-top: 12px; text-align: center;"></div>
         </div>
     </div>
 
@@ -103,6 +104,7 @@
             <div id="allAssignmentList" class="result-area">
                 <div class="empty-msg">조회 버튼을 눌러주세요.</div>
             </div>
+            <div id="assignmentPagination" style="margin-top: 12px; text-align: center;"></div>
         </div>
 
         <!-- 3. 멤버별 과제 조회: GET /members/{memberId}/assignments -->
@@ -218,58 +220,58 @@
 
 <!-- ===== Scripts ===== -->
 <script>
-// ===== HTTP 통신 래퍼 (핵심!) =====
-// 모든 fetch 호출을 감싸서 로그를 남긴다.
-async function httpFetch(url, options = {}) {
-    const method = (options.method || 'GET').toUpperCase();
-    const startTime = performance.now();
-    let response;
+    // ===== HTTP 통신 래퍼 (핵심!) =====
+    // 모든 fetch 호출을 감싸서 로그를 남긴다.
+    async function httpFetch(url, options = {}) {
+        const method = (options.method || 'GET').toUpperCase();
+        const startTime = performance.now();
+        let response;
 
-    try {
-        response = await fetch(url, options);
-    } catch (err) {
-        // 네트워크 에러 (서버 연결 불가 등)
-        const duration = Math.round(performance.now() - startTime);
-        addLog(method, url, 'ERR', duration, options.body);
-        addLogDetail(`  Network Error: ${err.message}`);
-        showToast('서버에 연결할 수 없습니다.', 'error');
-        throw err;
-    }
-
-    const duration = Math.round(performance.now() - startTime);
-    addLog(method, url, response.status, duration, options.body);
-
-    if (!response.ok) {
-        // HTTP 에러 응답 → body에서 메시지 추출 후 토스트 표시
-        let errorMessage = `요청 실패 (${response.status})`;
         try {
-            const errorBody = await response.clone().json();
-            addLogDetail(`  Response: ${JSON.stringify(errorBody)}`);
-            if (errorBody.message) {
-                errorMessage = errorBody.message;
-            }
-        } catch (e) {
-            // JSON이 아닌 에러 응답
+            response = await fetch(url, options);
+        } catch (err) {
+            // 네트워크 에러 (서버 연결 불가 등)
+            const duration = Math.round(performance.now() - startTime);
+            addLog(method, url, 'ERR', duration, options.body);
+            addLogDetail(`  Network Error: ${err.message}`);
+            showToast('서버에 연결할 수 없습니다.', 'error');
+            throw err;
         }
-        showToast(errorMessage, 'error');
-        throw new Error(errorMessage);
+
+        const duration = Math.round(performance.now() - startTime);
+        addLog(method, url, response.status, duration, options.body);
+
+        if (!response.ok) {
+            // HTTP 에러 응답 → body에서 메시지 추출 후 토스트 표시
+            let errorMessage = `요청 실패 (${response.status})`;
+            try {
+                const errorBody = await response.clone().json();
+                addLogDetail(`  Response: ${JSON.stringify(errorBody)}`);
+                if (errorBody.message) {
+                    errorMessage = errorBody.message;
+                }
+            } catch (e) {
+                // JSON이 아닌 에러 응답
+            }
+            showToast(errorMessage, 'error');
+            throw new Error(errorMessage);
+        }
+
+        return response;
     }
 
-    return response;
-}
+    // ===== 로그 패널 관리 =====
+    function addLog(method, url, status, duration, requestBody) {
+        const logBody = document.getElementById('logBody');
+        const time = new Date().toLocaleTimeString('ko-KR', { hour12: false });
 
-// ===== 로그 패널 관리 =====
-function addLog(method, url, status, duration, requestBody) {
-    const logBody = document.getElementById('logBody');
-    const time = new Date().toLocaleTimeString('ko-KR', { hour12: false });
+        const statusClass = typeof status === 'number'
+            ? (status < 300 ? 's2xx' : status < 500 ? 's4xx' : 's5xx')
+            : 's4xx';
 
-    const statusClass = typeof status === 'number'
-        ? (status < 300 ? 's2xx' : status < 500 ? 's4xx' : 's5xx')
-        : 's4xx';
-
-    const entry = document.createElement('div');
-    entry.className = 'log-entry';
-    entry.innerHTML = `
+        const entry = document.createElement('div');
+        entry.className = 'log-entry';
+        entry.innerHTML = `
         <span class="log-time">${time}</span>
         <span class="log-method ${method}">${method}</span>
         <span class="log-url">${url}</span>
@@ -277,85 +279,85 @@ function addLog(method, url, status, duration, requestBody) {
         <span class="log-duration">${duration}ms</span>
     `;
 
-    // Request Body가 있으면 표시
-    if (requestBody) {
-        const detail = document.createElement('div');
-        detail.className = 'log-entry';
-        detail.innerHTML = `
+        // Request Body가 있으면 표시
+        if (requestBody) {
+            const detail = document.createElement('div');
+            detail.className = 'log-entry';
+            detail.innerHTML = `
             <span class="log-time"></span>
             <span style="color:#666;padding-left:60px">  Request: ${requestBody}</span>
         `;
-        logBody.prepend(detail);
+            logBody.prepend(detail);
+        }
+
+        logBody.prepend(entry);
     }
 
-    logBody.prepend(entry);
-}
-
-function addLogDetail(text) {
-    const logBody = document.getElementById('logBody');
-    const detail = document.createElement('div');
-    detail.className = 'log-entry';
-    detail.innerHTML = `
+    function addLogDetail(text) {
+        const logBody = document.getElementById('logBody');
+        const detail = document.createElement('div');
+        detail.className = 'log-entry';
+        detail.innerHTML = `
         <span class="log-time"></span>
         <span style="color:#f44747;padding-left:60px">${text}</span>
     `;
-    // 가장 최근 로그 다음에 삽입 (첫 번째 자식 다음)
-    if (logBody.firstChild && logBody.firstChild.nextSibling) {
-        logBody.insertBefore(detail, logBody.firstChild.nextSibling);
-    } else {
-        logBody.appendChild(detail);
+        // 가장 최근 로그 다음에 삽입 (첫 번째 자식 다음)
+        if (logBody.firstChild && logBody.firstChild.nextSibling) {
+            logBody.insertBefore(detail, logBody.firstChild.nextSibling);
+        } else {
+            logBody.appendChild(detail);
+        }
     }
-}
 
-function clearLog() {
-    document.getElementById('logBody').innerHTML = '';
-}
+    function clearLog() {
+        document.getElementById('logBody').innerHTML = '';
+    }
 
-function toggleLogPanel() {
-    const panel = document.getElementById('logPanel');
-    panel.classList.toggle('expanded');
-    panel.classList.toggle('collapsed');
-}
+    function toggleLogPanel() {
+        const panel = document.getElementById('logPanel');
+        panel.classList.toggle('expanded');
+        panel.classList.toggle('collapsed');
+    }
 
-// ===== 토스트 알림 =====
-function showToast(message, type = 'error') {
-    const container = document.getElementById('toastContainer');
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.innerHTML = `
+    // ===== 토스트 알림 =====
+    function showToast(message, type = 'error') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `
         <span class="toast-icon">${type === 'error' ? '!' : 'i'}</span>
         <span class="toast-msg">${message}</span>
         <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
     `;
-    container.appendChild(toast);
+        container.appendChild(toast);
 
-    // 3초 후 자동 제거
-    setTimeout(() => {
-        toast.classList.add('toast-hide');
-        toast.addEventListener('animationend', () => toast.remove());
-    }, 3000);
-}
-
-// ===== Tab 전환 =====
-function switchTab(tabName) {
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
-
-    document.getElementById(`tab-${tabName}`).classList.add('active');
-    // 버튼 활성화
-    const buttons = document.querySelectorAll('.tab-btn');
-    if (tabName === 'member') buttons[0].classList.add('active');
-    else {
-        buttons[1].classList.add('active');
-        loadMemberSelect();
+        // 3초 후 자동 제거
+        setTimeout(() => {
+            toast.classList.add('toast-hide');
+            toast.addEventListener('animationend', () => toast.remove());
+        }, 3000);
     }
-}
 
-// ===== 페이지 로드 시 =====
-document.addEventListener('DOMContentLoaded', () => {
-    loadMembers();
-    showCreateForm();
-});
+    // ===== Tab 전환 =====
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+
+        document.getElementById(`tab-${tabName}`).classList.add('active');
+        // 버튼 활성화
+        const buttons = document.querySelectorAll('.tab-btn');
+        if (tabName === 'member') buttons[0].classList.add('active');
+        else {
+            buttons[1].classList.add('active');
+            loadMemberSelect();
+        }
+    }
+
+    // ===== 페이지 로드 시 =====
+    document.addEventListener('DOMContentLoaded', () => {
+        loadMembers();
+        showCreateForm();
+    });
 </script>
 <script src="/js/member.js"></script>
 <script src="/js/assignment.js"></script>

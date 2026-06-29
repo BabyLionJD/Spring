@@ -5,12 +5,14 @@ import com.BabyLion.Spring.assignment.dto.AssignmentCreateRequest;
 import com.BabyLion.Spring.assignment.dto.AssignmentResponse;
 import com.BabyLion.Spring.assignment.dto.AssignmentUpdateRequest;
 import com.BabyLion.Spring.assignment.service.AssignmentService;
+import com.BabyLion.Spring.global.dto.PageResponse;
 import com.BabyLion.Spring.member.domain.Member;
 import com.BabyLion.Spring.member.dto.LionCreateRequest;
 import com.BabyLion.Spring.member.dto.MemberResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,12 +58,9 @@ public class AssignmentController {
 
     @Operation(summary = "전체 과제 조회", description = "전체 과제들을 조회합니다.")
     @GetMapping("/assignments")
-    public ResponseEntity<?> getAllAssignment(){
-        List<Assignment> assignments = assignmentService.getAllAssignments();
-        List<AssignmentResponse> responses = assignments.stream()
-                .map(AssignmentResponse::from)
-                .toList();
-        return ResponseEntity.ok(responses);
+    public ResponseEntity<?> getAllAssignment(Pageable pageable){
+        PageResponse<AssignmentResponse> result = assignmentService.getAllAssignments(pageable);
+        return ResponseEntity.ok(result);
     }
 
     @Operation(summary = "과제 수정", description = "과제를 수정합니다.")
