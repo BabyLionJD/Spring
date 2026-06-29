@@ -1,11 +1,13 @@
 package com.BabyLion.Spring.member.controller;
 
+import com.BabyLion.Spring.global.dto.PageResponse;
 import com.BabyLion.Spring.member.domain.Member;
 import com.BabyLion.Spring.member.dto.*;
 import com.BabyLion.Spring.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,19 +68,19 @@ public class MemberController {
 
     @Operation(summary = "전체 조회", description = "모든 멤버를 조회합니다.")
     @GetMapping("")
-    public ResponseEntity<?> getAllMembers(@RequestParam(required = false) String part){
-        List<Member> members;
-        if (part == null) {
-            members = memberService.getAllMembers();
-        } else {
-            members = memberService.findByPart(part);
-        }
+    public ResponseEntity<?> getAllMembers(@RequestParam(required = false) String part, Pageable pageable) {
 
-        List<Object> response = new ArrayList<>();
-        for (Member member : members) {
-            response.add(MemberResponse.from(member));
+        if (part == null) {
+            PageResponse<MemberResponse> result = memberService.getAllMembers(pageable);
+            return ResponseEntity.status(200).body(result);
+        } else {
+            List<Member> members;
+            members = memberService.findByPart(part);
+            List<Object> response = new ArrayList<>();
+            for (Member member : members) {
+                response.add(MemberResponse.from(member));
+            }
+            return ResponseEntity.status(200).body(response);
         }
-        return ResponseEntity.status(200).body(response);
     }
 }
-
