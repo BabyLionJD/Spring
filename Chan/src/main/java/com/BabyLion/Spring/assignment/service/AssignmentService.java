@@ -2,14 +2,20 @@ package com.BabyLion.Spring.assignment.service;
 
 import com.BabyLion.Spring.assignment.domain.Assignment;
 import com.BabyLion.Spring.assignment.dto.AssignmentCreateRequest;
+import com.BabyLion.Spring.assignment.dto.AssignmentResponse;
 import com.BabyLion.Spring.assignment.dto.AssignmentUpdateRequest;
 import com.BabyLion.Spring.assignment.repository.AssignmentRepository;
+import com.BabyLion.Spring.global.dto.PageResponse;
 import com.BabyLion.Spring.global.exeption.AssignmentNotFoundException;
 import com.BabyLion.Spring.global.exeption.ErrorCodeEnum;
 import com.BabyLion.Spring.global.exeption.MemberNotFoundException;
 import com.BabyLion.Spring.member.domain.Member;
+import com.BabyLion.Spring.member.dto.MemberResponse;
 import com.BabyLion.Spring.member.repository.MemberRepository;
 import com.BabyLion.Spring.member.service.MemberService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,7 +72,10 @@ public class AssignmentService {
         return assignmentRepository.findByTitleContaining(keyword);
     }
 
-    public List<Assignment> getAllAssignments(){
-        return assignmentRepository.findAll();
+    public PageResponse<AssignmentResponse> getAllAssignments(Pageable pageable){
+        Page<Assignment> assignmentPage = assignmentRepository.findAll(pageable);
+        Page<AssignmentResponse> dtopages = assignmentPage.map(AssignmentResponse :: from);
+        PageResponse<AssignmentResponse> result = PageResponse.from(dtopages);
+        return result;
     }
 }

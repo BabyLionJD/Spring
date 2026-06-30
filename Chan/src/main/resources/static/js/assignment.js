@@ -12,9 +12,14 @@ const AssignmentAPI = {
         return res.json();
     },
 
-    // GET /assignments
-    async getAll() {
-        const res = await httpFetch('/assignments');
+    // GET /assignments (페이징 지원)
+    async getAll(page, size) {
+        const params = new URLSearchParams();
+        if (page !== undefined) params.append('page', page);
+        if (size !== undefined) params.append('size', size);
+
+        const url = params.toString() ? `/assignments?${params.toString()}` : '/assignments';
+        const res = await httpFetch(url);
         return res.json();
     },
 
@@ -52,11 +57,19 @@ const AssignmentAPI = {
     }
 };
 
+// ===== 과제 전체 조회 페이징 상태 =====
+let assignmentCurrentPage = 0;
+const assignmentPageSize = 10;
+
 // ===== 공통: 멤버 드롭다운 로드 =====
+// 드롭다운에는 전체 멤버가 다 보여야 하므로, 페이징 영향 없이 큰 size로 요청한다.
+// (MemberAPI.getAll의 시그니처가 (part, page, size)로 바뀌었으므로 맞춰서 호출)
 
 async function loadMemberSelect() {
     try {
-        const members = await MemberAPI.getAll();
+        const result = await MemberAPI.getAll(null, 0, 1000);
+        const members = Array.isArray(result) ? result : result.contents;
+
         const options = members.map(m =>
             `<option value="${m.id}">${m.name} (${m.roleName})</option>`
         ).join('');
@@ -104,6 +117,30 @@ function renderSingleAssignment(container, a) {
     `;
 }
 
+// ===== 과제 전체 조회 페이지네이션 렌더링 =====
+
+function renderAssignmentPagination(pageData) {
+    const el = document.getElementById('assignmentPagination');
+    if (!el) return; // HTML에 해당 요소가 없으면 그냥 스킵
+
+    if (!pageData) {
+        el.innerHTML = '';
+        return;
+    }
+
+    el.innerHTML = `
+        <button onclick="changeAssignmentPage(${pageData.number - 1})" ${pageData.number === 0 ? 'disabled' : ''}>이전</button>
+        <span>${pageData.number + 1} / ${pageData.totalPage} 페이지 (총 ${pageData.totalElement}건)</span>
+        <button onclick="changeAssignmentPage(${pageData.number + 1})" ${pageData.last ? 'disabled' : ''}>다음</button>
+    `;
+}
+
+function changeAssignmentPage(newPage) {
+    if (newPage < 0) return;
+    assignmentCurrentPage = newPage;
+    loadAllAssignments();
+}
+
 // ===== 1. 과제 등록 =====
 
 async function createAssignment() {
@@ -136,10 +173,12 @@ async function createAssignment() {
 async function loadAllAssignments() {
     const container = document.getElementById('allAssignmentList');
     try {
-        const assignments = await AssignmentAPI.getAll();
-        renderAssignments(container, assignments);
+        const result = await AssignmentAPI.getAll(assignmentCurrentPage, assignmentPageSize);
+        renderAssignments(container, result.contents);
+        renderAssignmentPagination(result);
     } catch (e) {
         container.innerHTML = '<div class="empty-msg">조회 실패</div>';
+        renderAssignmentPagination(null);
     }
 }
 

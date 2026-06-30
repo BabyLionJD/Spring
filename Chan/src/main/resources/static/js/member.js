@@ -3,9 +3,14 @@
 
 const MemberAPI = {
 
-    // GET /members (파트 필터링 지원)
-    async getAll(part) {
-        const url = part ? `/members?part=${encodeURIComponent(part)}` : '/members';
+    // GET /members (파트 필터링 + 페이징 지원)
+    async getAll(part, page, size) {
+        const params = new URLSearchParams();
+        if (part) params.append('part', part);
+        if (page !== undefined) params.append('page', page);
+        if (size !== undefined) params.append('size', size);
+
+        const url = params.toString() ? `/members?${params.toString()}` : '/members';
         const res = await httpFetch(url);
         return res.json();
     },
@@ -62,15 +67,28 @@ const MemberAPI = {
     }
 };
 
+// ===== 페이징 상태 =====
+let currentPage = 0;
+const pageSize = 10;
+
 // ===== Member UI 렌더링 =====
 
 async function loadMembers() {
     const partFilter = document.getElementById('partFilter').value;
     try {
-        const members = await MemberAPI.getAll(partFilter || null);
-        renderMemberTable(members);
+        const result = await MemberAPI.getAll(partFilter || null, currentPage, pageSize);
+
+        // part 필터가 있으면 배열 그대로 옴, 없으면 PageResponse 객체로 옴
+        if (Array.isArray(result)) {
+            renderMemberTable(result);
+            renderPagination(null); // 필터 모드에서는 페이지네이션 숨김
+        } else {
+            renderMemberTable(result.contents);
+            renderPagination(result);
+        }
     } catch (e) {
         renderMemberTable([]);
+        renderPagination(null);
     }
 }
 
@@ -98,6 +116,30 @@ function renderMemberTable(members) {
             </td>
         </tr>
     `).join('');
+}
+
+// ===== 페이지네이션 렌더링 =====
+
+function renderPagination(pageData) {
+    const el = document.getElementById('memberPagination');
+    if (!el) return; // HTML에 해당 요소가 없으면 그냥 스킵
+
+    if (!pageData) {
+        el.innerHTML = '';
+        return;
+    }
+
+    el.innerHTML = `
+        <button onclick="changeMemberPage(${pageData.number - 1})" ${pageData.number === 0 ? 'disabled' : ''}>이전</button>
+        <span>${pageData.number + 1} / ${pageData.totalPage} 페이지 (총 ${pageData.totalElement}명)</span>
+        <button onclick="changeMemberPage(${pageData.number + 1})" ${pageData.last ? 'disabled' : ''}>다음</button>
+    `;
+}
+
+function changeMemberPage(newPage) {
+    if (newPage < 0) return;
+    currentPage = newPage;
+    loadMembers();
 }
 
 // ===== Member 등록 =====
@@ -133,6 +175,7 @@ async function createMember() {
             await MemberAPI.createStaff({ name, major, generation, part, position });
         }
         clearCreateForm();
+        currentPage = 0; // 새로 만들었으니 첫 페이지부터 다시 보기
         await loadMembers();
     } catch (e) {
         // 에러는 httpFetch에서 이미 로그에 기록됨

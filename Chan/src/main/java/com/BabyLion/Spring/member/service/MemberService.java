@@ -1,14 +1,14 @@
 package com.BabyLion.Spring.member.service;
 
+import com.BabyLion.Spring.global.dto.PageResponse;
 import com.BabyLion.Spring.global.exeption.*;
 import com.BabyLion.Spring.member.domain.Member;
 import com.BabyLion.Spring.member.domain.RoleType;
-import com.BabyLion.Spring.member.dto.LionCreateRequest;
-import com.BabyLion.Spring.member.dto.LionUpdateRequest;
-import com.BabyLion.Spring.member.dto.StaffCreateRequest;
-import com.BabyLion.Spring.member.dto.StaffUpdateRequest;
+import com.BabyLion.Spring.member.dto.*;
 import com.BabyLion.Spring.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -98,8 +98,11 @@ public class MemberService {
                 .orElseThrow(() -> new MemberNotFoundException(ErrorCodeEnum.MEMBER_NOT_FOUND));
     }
 
-    public List<Member> getAllMembers() {
-        return repository.findAll();
+    public PageResponse<MemberResponse> getAllMembers(Pageable pageable) {
+        Page<Member> memberPage = repository.findAll(pageable);
+        Page<MemberResponse> dtoPage = memberPage.map(MemberResponse::from);
+        PageResponse<MemberResponse> result = PageResponse.from(dtoPage);
+        return result;
     }
 
     public List<Member> findByPart(String part){
