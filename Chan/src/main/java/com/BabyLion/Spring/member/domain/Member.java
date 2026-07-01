@@ -26,9 +26,10 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Assignment> assignments = new ArrayList<>();
     String password;
+    String loginId;
 
     //id는 자동 생성하므로 생성자에서 제외(GenerateValue)
-    public Member(String name, String major, String part, int generation, RoleType roleType, String studentId, String position, String password) {
+    public Member(String name, String major, String part, int generation, RoleType roleType, String studentId, String position, String password, String loginId) {
         this.name = name;
         this.major = major;
         this.part = part;
@@ -37,6 +38,7 @@ public class Member {
         this.studentId = studentId;
         this.position = position;
         this.password = password;
+        this.loginId = loginId;
     }
 
 //    protected Member() {}

@@ -1,7 +1,9 @@
 package com.BabyLion.Spring.auth.service;
 
 import com.BabyLion.Spring.assignment.repository.AssignmentRepository;
+import com.BabyLion.Spring.auth.dto.LoginRequest;
 import com.BabyLion.Spring.auth.dto.SignupRequest;
+import com.BabyLion.Spring.auth.jwt.JwtProvider;
 import com.BabyLion.Spring.global.exeption.*;
 import com.BabyLion.Spring.member.domain.Member;
 import com.BabyLion.Spring.member.domain.RoleType;
@@ -18,10 +20,12 @@ public class AuthService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtProvider jwtProvider;
 
-    public AuthService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtProvider jwtProvider) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtProvider = jwtProvider;
     }
 
 
@@ -37,7 +41,7 @@ public class AuthService {
                     dto.getGeneration(),
                     RoleType.LION,
                     dto.getStudentId(),
-                    null, encPassword);
+                    null, encPassword, dto.getLoginId());
 
             return memberRepository.save(member);
         }else{
@@ -49,9 +53,21 @@ public class AuthService {
                     dto.getGeneration(),
                     RoleType.STAFF,
                     null,
-                    dto.getPosition(), encPassword);
+                    dto.getPosition(), encPassword, dto.getLoginId());
             return memberRepository.save(member);
         }
+
     }
 
+    public String login(LoginRequest dto){
+        String password = dto.getPassword();
+        String id = dto.getLoginId();
+        Member member = memberRepository.findByLoginId(id)
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCodeEnum.MEMBER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
+            throw new InvalidPasswordException(ErrorCodeEnum.INVALID_PASSWORD);
+        }
+        return jwtProvider.createToken(member.getId());
+    }
 }

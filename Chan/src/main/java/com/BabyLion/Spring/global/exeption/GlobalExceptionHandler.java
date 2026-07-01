@@ -67,4 +67,14 @@ public class GlobalExceptionHandler {
                         e.getErrorCode().getMessage()
                 ));
     }
+
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidPassword(InvalidPasswordException e) {
+        return ResponseEntity
+                .status(e.getErrorCode().getStatus())
+                .body(new ErrorResponse(
+                        e.getErrorCode().getStatus(),
+                        e.getErrorCode().getMessage()
+                ));
+    }
 }

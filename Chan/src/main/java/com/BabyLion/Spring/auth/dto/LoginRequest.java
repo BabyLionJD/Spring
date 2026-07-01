@@ -6,16 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class SignupRequest {
-    private String name;
-    private String major;
-    private int generation;
-    private String part;
-    private RoleType roleType;
-    private String studentId;
-    private String position;
+@NoArgsConstructor
+public class LoginRequest {
     private String password;
     private String loginId;
 }

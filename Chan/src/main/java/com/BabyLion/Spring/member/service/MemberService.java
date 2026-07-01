@@ -45,7 +45,7 @@ public class MemberService {
                 dto.getGeneration(),
                 RoleType.LION,
                 dto.getStudentId(),
-                null, null);
+                null, null,null);
 
         return repository.save(member);
     }
@@ -64,7 +64,7 @@ public class MemberService {
                 dto.getGeneration(),
                 RoleType.STAFF,
                 null,
-                dto.getPosition(), null);
+                dto.getPosition(), null, null);
         return repository.save(member);
     }
 

@@ -6,7 +6,8 @@ public enum ErrorCodeEnum {
     ASSIGNMENT_NOT_FOUND(404, "존재하지 않는 과제입니다."),
     DUPLICATE_MEMBER_NAME(409, "이미 존재하는 이름입니다."),
     EMPTY_NAME(400, "이름은 비어있을 수 없습니다."),
-    INVALID_GENERATION(400, "0 이상의 기수를 입력해주십시오.");
+    INVALID_GENERATION(400, "0 이상의 기수를 입력해주십시오."),
+    INVALID_PASSWORD(401, "비밀번호가 틀렸습니다");
 
     private final int status;
     private final String message;
