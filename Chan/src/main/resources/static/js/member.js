@@ -1,9 +1,7 @@
 // ===== Member API 호출 모듈 =====
-// 모든 fetch 호출은 httpLog()를 통해 HTTP 통신 로그를 남긴다.
 
 const MemberAPI = {
 
-    // GET /members (파트 필터링 + 페이징 지원)
     async getAll(part, page, size) {
         const params = new URLSearchParams();
         if (part) params.append('part', part);
@@ -15,13 +13,11 @@ const MemberAPI = {
         return res.json();
     },
 
-    // GET /members/{id}
     async getById(id) {
         const res = await httpFetch(`/members/${id}`);
         return res.json();
     },
 
-    // POST /members/lions
     async createLion(data) {
         const res = await httpFetch('/members/lions', {
             method: 'POST',
@@ -31,7 +27,6 @@ const MemberAPI = {
         return res.json();
     },
 
-    // POST /members/staffs
     async createStaff(data) {
         const res = await httpFetch('/members/staffs', {
             method: 'POST',
@@ -41,7 +36,6 @@ const MemberAPI = {
         return res.json();
     },
 
-    // PUT /members/lions/{id}
     async updateLion(id, data) {
         const res = await httpFetch(`/members/lions/${id}`, {
             method: 'PUT',
@@ -51,7 +45,6 @@ const MemberAPI = {
         return res.json();
     },
 
-    // PUT /members/staffs/{id}
     async updateStaff(id, data) {
         const res = await httpFetch(`/members/staffs/${id}`, {
             method: 'PUT',
@@ -61,7 +54,6 @@ const MemberAPI = {
         return res.json();
     },
 
-    // DELETE /members/{id}
     async delete(id) {
         await httpFetch(`/members/${id}`, { method: 'DELETE' });
     }
@@ -69,19 +61,23 @@ const MemberAPI = {
 
 // ===== 페이징 상태 =====
 let currentPage = 0;
-const pageSize = 10;
+
+function getMemberPageSize() {
+    const el = document.getElementById('memberPageSize');
+    return el ? parseInt(el.value) : 10;
+}
 
 // ===== Member UI 렌더링 =====
 
 async function loadMembers() {
     const partFilter = document.getElementById('partFilter').value;
+    const pageSize = getMemberPageSize();
     try {
         const result = await MemberAPI.getAll(partFilter || null, currentPage, pageSize);
 
-        // part 필터가 있으면 배열 그대로 옴, 없으면 PageResponse 객체로 옴
         if (Array.isArray(result)) {
             renderMemberTable(result);
-            renderPagination(null); // 필터 모드에서는 페이지네이션 숨김
+            renderPagination(null);
         } else {
             renderMemberTable(result.contents);
             renderPagination(result);
@@ -95,7 +91,7 @@ async function loadMembers() {
 function renderMemberTable(members) {
     const tbody = document.getElementById('memberTableBody');
     if (members.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="empty-msg">등록된 멤버가 없습니다. 위 폼에서 추가해보세요!</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-msg">등록된 멤버가 없습니다.</td></tr>';
         return;
     }
 
@@ -122,7 +118,7 @@ function renderMemberTable(members) {
 
 function renderPagination(pageData) {
     const el = document.getElementById('memberPagination');
-    if (!el) return; // HTML에 해당 요소가 없으면 그냥 스킵
+    if (!el) return;
 
     if (!pageData) {
         el.innerHTML = '';
@@ -131,7 +127,7 @@ function renderPagination(pageData) {
 
     el.innerHTML = `
         <button onclick="changeMemberPage(${pageData.number - 1})" ${pageData.number === 0 ? 'disabled' : ''}>이전</button>
-        <span>${pageData.number + 1} / ${pageData.totalPage} 페이지 (총 ${pageData.totalElement}명)</span>
+        <span class="page-info">${pageData.number + 1} / ${pageData.totalPage} 페이지 (총 ${pageData.totalElement}명)</span>
         <button onclick="changeMemberPage(${pageData.number + 1})" ${pageData.last ? 'disabled' : ''}>다음</button>
     `;
 }
@@ -175,11 +171,9 @@ async function createMember() {
             await MemberAPI.createStaff({ name, major, generation, part, position });
         }
         clearCreateForm();
-        currentPage = 0; // 새로 만들었으니 첫 페이지부터 다시 보기
+        currentPage = 0;
         await loadMembers();
-    } catch (e) {
-        // 에러는 httpFetch에서 이미 로그에 기록됨
-    }
+    } catch (e) {}
 }
 
 function clearCreateForm() {
@@ -215,9 +209,7 @@ async function openEditMemberModal(id) {
             `;
         }
         modal.classList.add('active');
-    } catch (e) {
-        // 에러 로그는 httpFetch에서 처리
-    }
+    } catch (e) {}
 }
 
 function closeEditMemberModal() {
@@ -244,9 +236,7 @@ async function submitEditMember() {
         }
         closeEditMemberModal();
         await loadMembers();
-    } catch (e) {
-        // 에러 로그는 httpFetch에서 처리
-    }
+    } catch (e) {}
 }
 
 // ===== Member 삭제 =====
@@ -256,7 +246,5 @@ async function deleteMember(id, name) {
     try {
         await MemberAPI.delete(id);
         await loadMembers();
-    } catch (e) {
-        // 에러 로그는 httpFetch에서 처리
-    }
+    } catch (e) {}
 }
