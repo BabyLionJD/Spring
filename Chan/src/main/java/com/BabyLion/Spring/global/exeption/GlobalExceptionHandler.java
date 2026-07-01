@@ -77,4 +77,14 @@ public class GlobalExceptionHandler {
                         e.getErrorCode().getMessage()
                 ));
     }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ErrorResponse> handleForbidden(ForbiddenException e) {
+        return ResponseEntity
+                .status(e.getErrorCode().getStatus())
+                .body(new ErrorResponse(
+                        e.getErrorCode().getStatus(),
+                        e.getErrorCode().getMessage()
+                ));
+    }
 }
