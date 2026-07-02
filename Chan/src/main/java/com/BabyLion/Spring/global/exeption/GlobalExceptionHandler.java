@@ -87,4 +87,14 @@ public class GlobalExceptionHandler {
                         e.getErrorCode().getMessage()
                 ));
     }
+
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCommentNotFound(CommentNotFoundException e) {
+        return ResponseEntity
+                .status(e.getErrorCode().getStatus())
+                .body(new ErrorResponse(
+                        e.getErrorCode().getStatus(),
+                        e.getErrorCode().getMessage()
+                ));
+    }
 }

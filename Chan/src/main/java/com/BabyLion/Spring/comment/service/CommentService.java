@@ -65,7 +65,7 @@ public class CommentService {
                 .getPrincipal();
 
         Comment target = commentRepository.findById(id)
-                .orElseThrow(() -> new AssignmentNotFoundException(ErrorCodeEnum.ASSIGNMENT_NOT_FOUND));
+                .orElseThrow(() -> new AssignmentNotFoundException(ErrorCodeEnum.COMMENT_NOT_FOUND));
 
         if (!target.getMember().getId().equals(currentMemberId)) {
             throw new ForbiddenException(ErrorCodeEnum.FORBIDDEN);
