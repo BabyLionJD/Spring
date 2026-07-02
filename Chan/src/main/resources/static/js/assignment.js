@@ -2,7 +2,6 @@
 
 const AssignmentAPI = {
 
-    // POST /members/{memberId}/assignments
     async create(memberId, data) {
         const res = await httpFetch(`/members/${memberId}/assignments`, {
             method: 'POST',
@@ -12,7 +11,6 @@ const AssignmentAPI = {
         return res.json();
     },
 
-    // GET /assignments (페이징 지원)
     async getAll(page, size) {
         const params = new URLSearchParams();
         if (page !== undefined) params.append('page', page);
@@ -23,25 +21,21 @@ const AssignmentAPI = {
         return res.json();
     },
 
-    // GET /members/{memberId}/assignments
     async getByMember(memberId) {
         const res = await httpFetch(`/members/${memberId}/assignments`);
         return res.json();
     },
 
-    // GET /assignments/{id}
     async getById(id) {
         const res = await httpFetch(`/assignments/${id}`);
         return res.json();
     },
 
-    // GET /assignments/search?keyword=
     async search(keyword) {
         const res = await httpFetch(`/assignments/search?keyword=${encodeURIComponent(keyword)}`);
         return res.json();
     },
 
-    // PUT /assignments/{id}
     async update(id, data) {
         const res = await httpFetch(`/assignments/${id}`, {
             method: 'PUT',
@@ -51,7 +45,6 @@ const AssignmentAPI = {
         return res.json();
     },
 
-    // DELETE /assignments/{id}
     async delete(id) {
         await httpFetch(`/assignments/${id}`, { method: 'DELETE' });
     }
@@ -59,12 +52,13 @@ const AssignmentAPI = {
 
 // ===== 과제 전체 조회 페이징 상태 =====
 let assignmentCurrentPage = 0;
-const assignmentPageSize = 10;
+
+function getAssignmentPageSize() {
+    const el = document.getElementById('assignmentPageSize');
+    return el ? parseInt(el.value) : 10;
+}
 
 // ===== 공통: 멤버 드롭다운 로드 =====
-// 드롭다운에는 전체 멤버가 다 보여야 하므로, 페이징 영향 없이 큰 size로 요청한다.
-// (MemberAPI.getAll의 시그니처가 (part, page, size)로 바뀌었으므로 맞춰서 호출)
-
 async function loadMemberSelect() {
     try {
         const result = await MemberAPI.getAll(null, 0, 1000);
@@ -79,9 +73,7 @@ async function loadMemberSelect() {
 
         document.getElementById('memberAssignmentSelect').innerHTML =
             '<option value="">멤버 선택</option>' + options;
-    } catch (e) {
-        // 에러 로그는 httpFetch에서 처리
-    }
+    } catch (e) {}
 }
 
 // ===== 공통: 과제 목록 렌더링 =====
@@ -103,8 +95,6 @@ function renderAssignments(container, assignments) {
     `).join('');
 }
 
-// ===== 공통: 단건 렌더링 =====
-
 function renderSingleAssignment(container, a) {
     container.innerHTML = `
         <div class="assignment-list-item">
@@ -121,7 +111,7 @@ function renderSingleAssignment(container, a) {
 
 function renderAssignmentPagination(pageData) {
     const el = document.getElementById('assignmentPagination');
-    if (!el) return; // HTML에 해당 요소가 없으면 그냥 스킵
+    if (!el) return;
 
     if (!pageData) {
         el.innerHTML = '';
@@ -130,7 +120,7 @@ function renderAssignmentPagination(pageData) {
 
     el.innerHTML = `
         <button onclick="changeAssignmentPage(${pageData.number - 1})" ${pageData.number === 0 ? 'disabled' : ''}>이전</button>
-        <span>${pageData.number + 1} / ${pageData.totalPage} 페이지 (총 ${pageData.totalElement}건)</span>
+        <span class="page-info">${pageData.number + 1} / ${pageData.totalPage} 페이지 (총 ${pageData.totalElement}건)</span>
         <button onclick="changeAssignmentPage(${pageData.number + 1})" ${pageData.last ? 'disabled' : ''}>다음</button>
     `;
 }
@@ -163,17 +153,16 @@ async function createAssignment() {
         document.getElementById('assignmentTitle').value = '';
         document.getElementById('assignmentDesc').value = '';
         alert('과제가 등록되었습니다.');
-    } catch (e) {
-        // 에러 로그는 httpFetch에서 처리
-    }
+    } catch (e) {}
 }
 
 // ===== 2. 전체 과제 조회 =====
 
 async function loadAllAssignments() {
     const container = document.getElementById('allAssignmentList');
+    const pageSize = getAssignmentPageSize();
     try {
-        const result = await AssignmentAPI.getAll(assignmentCurrentPage, assignmentPageSize);
+        const result = await AssignmentAPI.getAll(assignmentCurrentPage, pageSize);
         renderAssignments(container, result.contents);
         renderAssignmentPagination(result);
     } catch (e) {
@@ -279,9 +268,7 @@ async function submitUpdateAssignment() {
         alert('과제가 수정되었습니다.');
         document.getElementById('editAssignmentForm').style.display = 'none';
         editingAssignmentId = null;
-    } catch (e) {
-        // 에러 로그는 httpFetch에서 처리
-    }
+    } catch (e) {}
 }
 
 // ===== 7. 과제 삭제 =====
@@ -299,9 +286,7 @@ async function deleteAssignmentById() {
         await AssignmentAPI.delete(id);
         alert('과제가 삭제되었습니다.');
         document.getElementById('deleteAssignmentIdInput').value = '';
-    } catch (e) {
-        // 에러 로그는 httpFetch에서 처리
-    }
+    } catch (e) {}
 }
 
 // ===== 멤버 탭에서 "과제" 버튼 클릭 시 =====
