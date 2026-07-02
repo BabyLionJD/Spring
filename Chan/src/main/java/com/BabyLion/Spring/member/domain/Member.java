@@ -1,6 +1,7 @@
 package com.BabyLion.Spring.member.domain;
 
 import com.BabyLion.Spring.assignment.domain.Assignment;
+import com.BabyLion.Spring.comment.domain.Comment;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,8 @@ public class Member {
     List<Assignment> assignments = new ArrayList<>();
     String password;
     String loginId;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Comment> comments = new ArrayList<>();
 
     //id는 자동 생성하므로 생성자에서 제외(GenerateValue)
     public Member(String name, String major, String part, int generation, RoleType roleType, String studentId, String position, String password, String loginId) {

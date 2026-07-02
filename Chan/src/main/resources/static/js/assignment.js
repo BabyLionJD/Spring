@@ -50,6 +50,32 @@ const AssignmentAPI = {
     }
 };
 
+// ===== Comment API 호출 모듈 =====
+
+const CommentAPI = {
+
+    // GET /assignments/{assignmentId}/comments
+    async getAll(assignmentId) {
+        const res = await httpFetch(`/assignments/${assignmentId}/comments`);
+        return res.json();
+    },
+
+    // POST /assignments/{assignmentId}/comments
+    async create(assignmentId, content) {
+        const res = await httpFetch(`/assignments/${assignmentId}/comments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content })
+        });
+        return res.json();
+    },
+
+    // DELETE /comments/{id}
+    async delete(id) {
+        await httpFetch(`/comments/${id}`, { method: 'DELETE' });
+    }
+};
+
 // ===== 과제 전체 조회 페이징 상태 =====
 let assignmentCurrentPage = 0;
 
@@ -76,7 +102,7 @@ async function loadMemberSelect() {
     } catch (e) {}
 }
 
-// ===== 공통: 과제 목록 렌더링 =====
+// ===== 공통: 과제 목록 렌더링 (댓글 버튼 포함) =====
 
 function renderAssignments(container, assignments) {
     if (assignments.length === 0) {
@@ -85,11 +111,32 @@ function renderAssignments(container, assignments) {
     }
 
     container.innerHTML = assignments.map(a => `
-        <div class="assignment-list-item">
+        <div class="assignment-list-item" id="assignment-item-${a.id}">
             <div class="info">
                 <div class="title">${a.title}</div>
                 <div class="desc">${a.description || '-'}</div>
                 <div class="meta">ID: ${a.id} | 작성자: ${a.memberName}</div>
+            </div>
+            <div style="margin-top: 8px;">
+                <button class="btn btn-secondary btn-sm" onclick="toggleComments(${a.id})">
+                    💬 댓글 보기
+                </button>
+            </div>
+            <!-- 댓글 영역 (초기엔 숨김) -->
+            <div id="comment-area-${a.id}" style="display:none; margin-top:10px; padding:10px; background:#f8f9fa; border-radius:8px;">
+                <div id="comment-list-${a.id}" class="comment-list">
+                    <div class="empty-msg">로딩 중...</div>
+                </div>
+                <!-- 댓글 작성 폼 (로그인 시에만 표시) -->
+                <div id="comment-form-${a.id}" style="display:none; margin-top:10px;">
+                    <div style="display:flex; gap:8px;">
+                        <input id="comment-input-${a.id}" 
+                               placeholder="댓글을 입력하세요..." 
+                               style="flex:1; padding:6px 10px; border:1px solid #ddd; border-radius:6px; font-size:13px;"
+                               onkeydown="if(event.key==='Enter') submitComment(${a.id})">
+                        <button class="btn btn-primary btn-sm" onclick="submitComment(${a.id})">등록</button>
+                    </div>
+                </div>
             </div>
         </div>
     `).join('');
@@ -105,6 +152,96 @@ function renderSingleAssignment(container, a) {
             </div>
         </div>
     `;
+}
+
+// ===== 댓글 토글 (열기/닫기) =====
+
+async function toggleComments(assignmentId) {
+    const area = document.getElementById(`comment-area-${assignmentId}`);
+    const isHidden = area.style.display === 'none';
+
+    if (isHidden) {
+        area.style.display = 'block';
+        // 로그인 상태면 댓글 작성 폼 표시
+        if (localStorage.getItem('jwt_token')) {
+            document.getElementById(`comment-form-${assignmentId}`).style.display = 'block';
+        }
+        await loadComments(assignmentId);
+    } else {
+        area.style.display = 'none';
+    }
+}
+
+// ===== 댓글 목록 로드 =====
+
+async function loadComments(assignmentId) {
+    const listEl = document.getElementById(`comment-list-${assignmentId}`);
+    try {
+        const comments = await CommentAPI.getAll(assignmentId);
+        renderComments(listEl, comments, assignmentId);
+    } catch (e) {
+        listEl.innerHTML = '<div class="empty-msg">댓글 로드 실패</div>';
+    }
+}
+
+// ===== 댓글 목록 렌더링 =====
+
+function renderComments(container, comments, assignmentId) {
+    if (comments.length === 0) {
+        container.innerHTML = '<div class="empty-msg" style="font-size:13px;">아직 댓글이 없습니다.</div>';
+        return;
+    }
+
+    container.innerHTML = comments.map(c => `
+        <div class="comment-item" style="padding:8px 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <span style="font-weight:bold; font-size:13px; color:#333;">${c.memberName}</span>
+                <span style="font-size:12px; color:#999; margin-left:8px;">${formatDate(c.createdAt)}</span>
+                <div style="font-size:14px; margin-top:4px;">${c.content}</div>
+            </div>
+            ${localStorage.getItem('jwt_token') ? `
+                <button class="btn btn-danger btn-sm" 
+                        style="font-size:11px; padding:2px 8px;"
+                        onclick="deleteComment(${c.id}, ${assignmentId})">삭제</button>
+            ` : ''}
+        </div>
+    `).join('');
+}
+
+// ===== 댓글 등록 =====
+
+async function submitComment(assignmentId) {
+    const input = document.getElementById(`comment-input-${assignmentId}`);
+    const content = input.value.trim();
+
+    if (!content) {
+        alert('댓글 내용을 입력해주세요.');
+        return;
+    }
+
+    try {
+        await CommentAPI.create(assignmentId, content);
+        input.value = '';
+        await loadComments(assignmentId); // 등록 후 목록 새로고침
+    } catch (e) {}
+}
+
+// ===== 댓글 삭제 =====
+
+async function deleteComment(commentId, assignmentId) {
+    if (!confirm('댓글을 삭제하시겠습니까?')) return;
+    try {
+        await CommentAPI.delete(commentId);
+        await loadComments(assignmentId); // 삭제 후 목록 새로고침
+    } catch (e) {}
+}
+
+// ===== 날짜 포맷 =====
+
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
 
 // ===== 과제 전체 조회 페이지네이션 렌더링 =====
