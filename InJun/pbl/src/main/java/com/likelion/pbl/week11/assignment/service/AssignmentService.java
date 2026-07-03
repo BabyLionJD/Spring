@@ -6,10 +6,14 @@ import com.likelion.pbl.week11.assignment.dto.AssignmentUpdateRequest;
 import com.likelion.pbl.week11.assignment.repository.AssignmentRepository;
 import com.likelion.pbl.week11.domain.Member;
 import com.likelion.pbl.week11.global.exception.AssignmentNotFoundException;
+import com.likelion.pbl.week11.global.exception.ErrorCodeEnum;
+import com.likelion.pbl.week11.global.exception.ForbiddenException;
 import com.likelion.pbl.week11.global.exception.MemberNotFoundException;
 import com.likelion.pbl.week11.repository.MemberRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,6 +71,7 @@ public class AssignmentService {
     @Transactional
     public Assignment updateAssignment(Long id, AssignmentUpdateRequest request) {
         Assignment assignment = getAssignment(id);
+        validateOwner(assignment);
         assignment.updateInfo(request.getTitle(), request.getDescription());
         return assignment;
     }
@@ -74,6 +79,7 @@ public class AssignmentService {
     @Transactional
     public void deleteAssignment(Long id) {
         Assignment assignment = getAssignment(id);
+        validateOwner(assignment);
         assignmentRepository.delete(assignment);
     }
 
@@ -85,5 +91,18 @@ public class AssignmentService {
     private Assignment getAssignment(Long id) {
         return assignmentRepository.findById(id)
                 .orElseThrow(() -> new AssignmentNotFoundException("해당 과제를 찾을 수 없습니다. id: " + id));
+    }
+
+    private void validateOwner(Assignment assignment) {
+        Long currentMemberId = getCurrentMemberId();
+        Long ownerId = assignment.getMember().getId();
+        if (!ownerId.equals(currentMemberId)) {
+            throw new ForbiddenException(ErrorCodeEnum.FORBIDDEN);
+        }
+    }
+
+    private Long getCurrentMemberId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (Long) authentication.getPrincipal();
     }
 }
