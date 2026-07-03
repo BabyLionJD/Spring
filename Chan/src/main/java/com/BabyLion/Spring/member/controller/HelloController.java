@@ -15,7 +15,6 @@ public class HelloController {
     // 보너스 과제
     @GetMapping("/hello/{name}")
     public String bonus(@PathVariable String name){
-        System.out.println(name);
         return "Hello, " + name + "!";
     }
 

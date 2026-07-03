@@ -1,0 +1,27 @@
+package com.BabyLion.Spring.global.exception;
+
+import com.BabyLion.Spring.global.dto.ErrorResponse;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    // 우리가 의도적으로 던지는 예외 — 모두 여기서 처리
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
+        ErrorCodeEnum errorCode = e.getErrorCode();
+        return ResponseEntity
+                .status(errorCode.getStatus())
+                .body(new ErrorResponse(errorCode.getStatus(), errorCode.getMessage()));
+    }
+
+    // 예상치 못한 예외 — 스택트레이스 노출 방지
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception e) {
+        return ResponseEntity
+                .status(500)
+                .body(new ErrorResponse(500, "서버 내부 오류가 발생했습니다."));
+    }
+}

@@ -1,4 +1,4 @@
-package com.BabyLion.Spring.global.exeption;
+package com.BabyLion.Spring.global.exception;
 
 public enum ErrorCodeEnum {
     INVALID_STUDENT_ID(400, "studentId는 숫자만 입력 가능합니다."),

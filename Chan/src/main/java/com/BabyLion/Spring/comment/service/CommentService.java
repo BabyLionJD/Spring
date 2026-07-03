@@ -1,16 +1,13 @@
 package com.BabyLion.Spring.comment.service;
 
 import com.BabyLion.Spring.assignment.domain.Assignment;
-import com.BabyLion.Spring.assignment.dto.AssignmentCreateRequest;
 import com.BabyLion.Spring.assignment.repository.AssignmentRepository;
 import com.BabyLion.Spring.comment.domain.Comment;
 import com.BabyLion.Spring.comment.dto.CommentCreateRequest;
 import com.BabyLion.Spring.comment.dto.CommentResponse;
 import com.BabyLion.Spring.comment.repository.CommentRepository;
-import com.BabyLion.Spring.global.exeption.AssignmentNotFoundException;
-import com.BabyLion.Spring.global.exeption.ErrorCodeEnum;
-import com.BabyLion.Spring.global.exeption.ForbiddenException;
-import com.BabyLion.Spring.global.exeption.MemberNotFoundException;
+import com.BabyLion.Spring.global.exception.BusinessException;
+import com.BabyLion.Spring.global.exception.ErrorCodeEnum;
 import com.BabyLion.Spring.member.domain.Member;
 import com.BabyLion.Spring.member.repository.MemberRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,9 +37,9 @@ public class CommentService {
                 .getPrincipal();
 
         Member member = memberRepository.findById(currentMemberId)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCodeEnum.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCodeEnum.MEMBER_NOT_FOUND));
         Assignment assignment = assignmentRepository.findById(assignmentId)
-                .orElseThrow(() -> new AssignmentNotFoundException(ErrorCodeEnum.ASSIGNMENT_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCodeEnum.ASSIGNMENT_NOT_FOUND));
 
         Comment comment = new Comment(null, dto.getContent(), LocalDateTime.now(), member, assignment);
         return CommentResponse.from(commentRepository.save(comment));
@@ -50,7 +47,7 @@ public class CommentService {
 
     public List<CommentResponse> getComments(Long assignmentId) {
         assignmentRepository.findById(assignmentId)
-                .orElseThrow(() -> new AssignmentNotFoundException(ErrorCodeEnum.ASSIGNMENT_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCodeEnum.ASSIGNMENT_NOT_FOUND));
 
         return commentRepository.findByAssignmentId(assignmentId)
                 .stream()
@@ -65,10 +62,10 @@ public class CommentService {
                 .getPrincipal();
 
         Comment target = commentRepository.findById(id)
-                .orElseThrow(() -> new AssignmentNotFoundException(ErrorCodeEnum.COMMENT_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCodeEnum.COMMENT_NOT_FOUND));
 
         if (!target.getMember().getId().equals(currentMemberId)) {
-            throw new ForbiddenException(ErrorCodeEnum.FORBIDDEN);
+            throw new BusinessException(ErrorCodeEnum.FORBIDDEN);
         }
 
         commentRepository.delete(target);

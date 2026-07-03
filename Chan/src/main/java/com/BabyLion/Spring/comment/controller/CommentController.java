@@ -37,7 +37,7 @@ public class CommentController {
 
     @Operation(summary = "댓글 목록 조회", description = "댓글을 조회합니다.")
     @GetMapping("/assignments/{assignmentId}/comments")
-    public ResponseEntity<?> getComment(@PathVariable Long assignmentId) {
+    public ResponseEntity<List<CommentResponse>> getComment(@PathVariable Long assignmentId) {
         List<CommentResponse> comments = commentService.getComments(assignmentId);
         return ResponseEntity.ok(comments);
     }
@@ -45,7 +45,7 @@ public class CommentController {
 
     @Operation(summary = "댓글 삭제", description = "댓글을 삭제합니다.")
     @DeleteMapping("/comments/{id}")
-    public ResponseEntity<?> deletecomment(@PathVariable Long id) {
+    public ResponseEntity<Void> deletecomment(@PathVariable Long id) {
         commentService.deleteComment(id);
         return ResponseEntity.status(204).build();
     }
