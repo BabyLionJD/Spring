@@ -29,14 +29,8 @@ public class MemberService {
 
     @Transactional
     public Member createLion(LionCreateRequest dto){
-        if (!dto.getStudentId().matches("[0-9]+")){
-            throw new BusinessException(ErrorCodeEnum.INVALID_STUDENT_ID);
-        } else if (repository.existsByName(dto.getName())) {
+        if (repository.existsByName(dto.getName())) {
             throw new BusinessException(ErrorCodeEnum.DUPLICATE_MEMBER_NAME);
-        } else if(dto.getName().isEmpty()){
-            throw new BusinessException(ErrorCodeEnum.EMPTY_NAME);
-        } else if (dto.getGeneration() <= 0) {
-            throw new BusinessException(ErrorCodeEnum.INVALID_GENERATION);
         }
 
         Member member = new Member(
@@ -79,7 +73,7 @@ public class MemberService {
         if (!member.getId().equals(currentMemberId)) {
             throw new BusinessException(ErrorCodeEnum.MEMBER_FORBIDDEN);
         }
-        member.updateInfo(member.getName(), dto.getMajor(), dto.getPart(), dto.getGeneration());
+        member.updateInfo(dto.getName(), dto.getMajor(), dto.getPart(), dto.getGeneration());
         member.updateStudentID(dto.getStudentId());
         return repository.save(member);
     }
@@ -94,7 +88,7 @@ public class MemberService {
         if (!member.getId().equals(currentMemberId)) {
             throw new BusinessException(ErrorCodeEnum.MEMBER_FORBIDDEN);
         }
-        member.updateInfo(member.getName(), dto.getMajor(), dto.getPart(), dto.getGeneration());
+        member.updateInfo(dto.getName(), dto.getMajor(), dto.getPart(), dto.getGeneration());
         member.updatePosition(dto.getPosition());
         return repository.save(member);
     }

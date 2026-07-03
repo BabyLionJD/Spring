@@ -3,6 +3,7 @@ package com.BabyLion.Spring.member.domain;
 import com.BabyLion.Spring.assignment.domain.Assignment;
 import com.BabyLion.Spring.comment.domain.Comment;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +19,10 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    String name, major, part;
+    @NotBlank(message = "이름은 필수입니다.")
+    private String name;
+    String major;
+    String part;
     int generation;
     @Enumerated(EnumType.STRING)
     RoleType roleType;

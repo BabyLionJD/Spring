@@ -6,6 +6,7 @@ import com.BabyLion.Spring.member.dto.*;
 import com.BabyLion.Spring.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,15 +29,14 @@ public class MemberController {
 
     @Operation(summary = "Lion 등록", description = "아기사자를 등록합니다.")
     @PostMapping("/lions")
-    public ResponseEntity<MemberResponse> createLion(@RequestBody LionCreateRequest dto) {
-        Member member = memberService.createLion(dto);
+    public ResponseEntity<MemberResponse> createLion(@Valid @RequestBody LionCreateRequest dto) {        Member member = memberService.createLion(dto);
         MemberResponse response = MemberResponse.from(member);
         return ResponseEntity.status(201).body(response);
     }
 
     @Operation(summary = "Staff 등록", description = "운영진을 등록합니다.")
     @PostMapping("/staffs")
-    public ResponseEntity<MemberResponse> createStaff(@RequestBody StaffCreateRequest dto) {
+    public ResponseEntity<MemberResponse> createStaff(@Valid @RequestBody StaffCreateRequest dto) {
         Member member = memberService.createStaff(dto);
         MemberResponse response = MemberResponse.from(member);
         return ResponseEntity.status(201).body(response);
