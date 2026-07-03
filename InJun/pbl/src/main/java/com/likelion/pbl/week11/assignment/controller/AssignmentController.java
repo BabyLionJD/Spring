@@ -1,10 +1,10 @@
-package com.likelion.pbl.week10.assignment.controller;
+package com.likelion.pbl.week11.assignment.controller;
 
-import com.likelion.pbl.week10.assignment.domain.Assignment;
-import com.likelion.pbl.week10.assignment.dto.AssignmentCreateRequest;
-import com.likelion.pbl.week10.assignment.dto.AssignmentResponse;
-import com.likelion.pbl.week10.assignment.dto.AssignmentUpdateRequest;
-import com.likelion.pbl.week10.assignment.service.AssignmentService;
+import com.likelion.pbl.week11.assignment.domain.Assignment;
+import com.likelion.pbl.week11.assignment.dto.AssignmentCreateRequest;
+import com.likelion.pbl.week11.assignment.dto.AssignmentResponse;
+import com.likelion.pbl.week11.assignment.dto.AssignmentUpdateRequest;
+import com.likelion.pbl.week11.assignment.service.AssignmentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

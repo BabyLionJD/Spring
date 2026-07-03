@@ -1,4 +1,4 @@
-package com.likelion.pbl.week10.assignment.dto;
+package com.likelion.pbl.week11.assignment.dto;
 
 public class AssignmentCreateRequest {
 

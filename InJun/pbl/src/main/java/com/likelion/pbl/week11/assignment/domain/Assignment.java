@@ -1,6 +1,7 @@
-package com.likelion.pbl.week10.assignment.domain;
+package com.likelion.pbl.week11.assignment.domain;
 
-import com.likelion.pbl.week10.domain.Member;
+
+import com.likelion.pbl.week11.domain.Member;
 import jakarta.persistence.*;
 
 @Entity

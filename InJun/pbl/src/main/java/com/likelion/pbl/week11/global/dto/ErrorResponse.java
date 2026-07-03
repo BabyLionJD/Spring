@@ -1,4 +1,4 @@
-package com.likelion.pbl.week10.global.dto;
+package com.likelion.pbl.week11.global.dto;
 
 public class ErrorResponse {
 

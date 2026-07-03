@@ -1,6 +1,6 @@
-package com.likelion.pbl.week10.assignment.repository;
+package com.likelion.pbl.week11.assignment.repository;
 
-import com.likelion.pbl.week10.assignment.domain.Assignment;
+import com.likelion.pbl.week11.assignment.domain.Assignment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

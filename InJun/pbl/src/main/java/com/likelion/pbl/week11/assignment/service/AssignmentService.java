@@ -1,13 +1,13 @@
-package com.likelion.pbl.week10.assignment.service;
+package com.likelion.pbl.week11.assignment.service;
 
-import com.likelion.pbl.week10.assignment.domain.Assignment;
-import com.likelion.pbl.week10.assignment.dto.AssignmentCreateRequest;
-import com.likelion.pbl.week10.assignment.dto.AssignmentUpdateRequest;
-import com.likelion.pbl.week10.assignment.repository.AssignmentRepository;
-import com.likelion.pbl.week10.domain.Member;
-import com.likelion.pbl.week10.global.exception.AssignmentNotFoundException;
-import com.likelion.pbl.week10.global.exception.MemberNotFoundException;
-import com.likelion.pbl.week10.repository.MemberRepository;
+import com.likelion.pbl.week11.assignment.domain.Assignment;
+import com.likelion.pbl.week11.assignment.dto.AssignmentCreateRequest;
+import com.likelion.pbl.week11.assignment.dto.AssignmentUpdateRequest;
+import com.likelion.pbl.week11.assignment.repository.AssignmentRepository;
+import com.likelion.pbl.week11.domain.Member;
+import com.likelion.pbl.week11.global.exception.AssignmentNotFoundException;
+import com.likelion.pbl.week11.global.exception.MemberNotFoundException;
+import com.likelion.pbl.week11.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

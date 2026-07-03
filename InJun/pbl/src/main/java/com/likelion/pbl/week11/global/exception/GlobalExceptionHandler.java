@@ -1,12 +1,12 @@
-package com.likelion.pbl.week10.global.exception;
+package com.likelion.pbl.week11.global.exception;
 
-import com.likelion.pbl.week10.global.dto.ErrorResponse;
+import com.likelion.pbl.week11.global.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice(basePackages = "com.likelion.pbl.week10")
+@RestControllerAdvice(basePackages = "com.likelion.pbl.week11")
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MemberNotFoundException.class)

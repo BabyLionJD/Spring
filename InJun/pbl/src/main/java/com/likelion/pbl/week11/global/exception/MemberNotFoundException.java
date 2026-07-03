@@ -1,4 +1,4 @@
-package com.likelion.pbl.week10.global.exception;
+package com.likelion.pbl.week11.global.exception;
 
 public class MemberNotFoundException extends RuntimeException {
 

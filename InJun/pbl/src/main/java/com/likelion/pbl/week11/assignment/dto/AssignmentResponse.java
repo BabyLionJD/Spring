@@ -1,6 +1,6 @@
-package com.likelion.pbl.week10.assignment.dto;
+package com.likelion.pbl.week11.assignment.dto;
 
-import com.likelion.pbl.week10.assignment.domain.Assignment;
+import com.likelion.pbl.week11.assignment.domain.Assignment;
 
 public class AssignmentResponse {
 
