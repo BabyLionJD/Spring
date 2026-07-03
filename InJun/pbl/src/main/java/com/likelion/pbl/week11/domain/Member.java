@@ -23,6 +23,7 @@ public class Member {
 
     private String studentId;
     private String position;
+    private String password;
 
     @OneToMany(mappedBy = "member")
     private List<Assignment> assignments = new ArrayList<>();
@@ -39,6 +40,12 @@ public class Member {
         this.roleType = roleType;
         this.studentId = studentId;
         this.position = position;
+    }
+
+    public Member(String name, String major, int generation, String part,
+                  RoleType roleType, String studentId, String position, String password) {
+        this(name, major, generation, part, roleType, studentId, position);
+        this.password = password;
     }
 
     public void updateInfo(String major, int generation, String part) {
@@ -95,6 +102,10 @@ public class Member {
 
     public String getPosition() {
         return position;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public List<Assignment> getAssignments() {
