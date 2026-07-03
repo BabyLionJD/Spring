@@ -9,6 +9,8 @@ import com.likelion.pbl.week11.dto.StaffUpdateRequest;
 import com.likelion.pbl.week11.global.exception.DuplicateMemberException;
 import com.likelion.pbl.week11.global.exception.MemberNotFoundException;
 import com.likelion.pbl.week11.repository.MemberRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,8 +68,16 @@ public class MemberService {
         return memberRepository.findAll();
     }
 
+    public Page<Member> findAllMembers(Pageable pageable) {
+        return memberRepository.findAll(pageable);
+    }
+
     public List<Member> findByPart(String part) {
         return memberRepository.findByPart(part);
+    }
+
+    public Page<Member> findByPart(String part, Pageable pageable) {
+        return memberRepository.findByPart(part, pageable);
     }
 
     public Member findMember(Long id) {

@@ -8,6 +8,8 @@ import com.likelion.pbl.week11.domain.Member;
 import com.likelion.pbl.week11.global.exception.AssignmentNotFoundException;
 import com.likelion.pbl.week11.global.exception.MemberNotFoundException;
 import com.likelion.pbl.week11.repository.MemberRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,13 +38,26 @@ public class AssignmentService {
         return assignmentRepository.findAll();
     }
 
+    public Page<Assignment> findAll(Pageable pageable) {
+        return assignmentRepository.findAll(pageable);
+    }
+
     public List<Assignment> findByMemberId(Long memberId) {
         getMember(memberId);
         return assignmentRepository.findByMemberId(memberId);
     }
 
+    public Page<Assignment> findByMemberId(Long memberId, Pageable pageable) {
+        getMember(memberId);
+        return assignmentRepository.findByMemberId(memberId, pageable);
+    }
+
     public List<Assignment> searchByTitle(String keyword) {
         return assignmentRepository.findByTitleContaining(keyword);
+    }
+
+    public Page<Assignment> searchByTitle(String keyword, Pageable pageable) {
+        return assignmentRepository.findByTitleContaining(keyword, pageable);
     }
 
     public Assignment findById(Long id) {
