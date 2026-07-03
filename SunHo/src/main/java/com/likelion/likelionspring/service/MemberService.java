@@ -7,6 +7,8 @@ import com.likelion.likelionspring.dto.LionUpdateRequest;
 import com.likelion.likelionspring.dto.StaffCreateRequest;
 import com.likelion.likelionspring.dto.StaffUpdateRequest;
 import com.likelion.likelionspring.global.exception.DuplicateMemberNameException;
+import com.likelion.likelionspring.global.exception.ErrorCodeEnum;
+import com.likelion.likelionspring.global.exception.ForbiddenException;
 import com.likelion.likelionspring.global.exception.InvalidMemberRequestException;
 import com.likelion.likelionspring.global.exception.MemberNotFoundException;
 import com.likelion.likelionspring.repository.MemberRepository;
@@ -64,9 +66,10 @@ public class MemberService {
 
     // Lion 수정
     @Transactional
-    public Member updateLion(Long id, LionUpdateRequest request) {
+    public Member updateLion(Long id, Long currentMemberId, LionUpdateRequest request) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException("멤버를 찾을 수 없습니다: " + id));
+        validateOwner(member, currentMemberId);
         member.updateInfo(request.getMajor(), request.getGeneration(), request.getPart());
         member.updateStudentId(request.getStudentId());
         return memberRepository.save(member);
@@ -74,9 +77,10 @@ public class MemberService {
 
     // Staff 수정
     @Transactional
-    public Member updateStaff(Long id, StaffUpdateRequest request) {
+    public Member updateStaff(Long id, Long currentMemberId, StaffUpdateRequest request) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException("멤버를 찾을 수 없습니다: " + id));
+        validateOwner(member, currentMemberId);
         member.updateInfo(request.getMajor(), request.getGeneration(), request.getPart());
         member.updatePosition(request.getPosition());
         return memberRepository.save(member);
@@ -84,10 +88,17 @@ public class MemberService {
 
     // 삭제
     @Transactional
-    public void deleteMember(Long id) {
-        memberRepository.findById(id)
+    public void deleteMember(Long id, Long currentMemberId) {
+        Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException("멤버를 찾을 수 없습니다: " + id));
+        validateOwner(member, currentMemberId);
         memberRepository.deleteById(id);
+    }
+
+    private void validateOwner(Member member, Long currentMemberId) {
+        if (!member.getId().equals(currentMemberId)) {
+            throw new ForbiddenException(ErrorCodeEnum.FORBIDDEN);
+        }
     }
 
     // 단건 조회

@@ -7,6 +7,7 @@ import com.likelion.likelionspring.service.MemberService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -46,18 +47,20 @@ public class MemberController {
     }
 
     @PutMapping("/lions/{id}")
-    public MemberResponse updateLion(@PathVariable Long id, @RequestBody LionUpdateRequest request) {
-        return MemberResponse.from(memberService.updateLion(id, request));
+    public MemberResponse updateLion(@PathVariable Long id, @AuthenticationPrincipal Long memberId,
+                                      @RequestBody LionUpdateRequest request) {
+        return MemberResponse.from(memberService.updateLion(id, memberId, request));
     }
 
     @PutMapping("/staffs/{id}")
-    public MemberResponse updateStaff(@PathVariable Long id, @RequestBody StaffUpdateRequest request) {
-        return MemberResponse.from(memberService.updateStaff(id, request));
+    public MemberResponse updateStaff(@PathVariable Long id, @AuthenticationPrincipal Long memberId,
+                                       @RequestBody StaffUpdateRequest request) {
+        return MemberResponse.from(memberService.updateStaff(id, memberId, request));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
+    public void deleteMember(@PathVariable Long id, @AuthenticationPrincipal Long memberId) {
+        memberService.deleteMember(id, memberId);
     }
 }
