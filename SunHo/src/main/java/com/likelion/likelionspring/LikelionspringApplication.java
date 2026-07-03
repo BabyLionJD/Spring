@@ -9,6 +9,5 @@ public class LikelionspringApplication {
 
 	public static void main(String[] args) {
 		ApplicationContext context = SpringApplication.run(LikelionspringApplication.class, args);  // ← context로 받기
-
 	}
 }
