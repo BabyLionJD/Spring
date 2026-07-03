@@ -12,4 +12,6 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
 
     @Query("SELECT a FROM Assignment a WHERE a.title LIKE %:title%")
     List<Assignment> findByTitleContainingJPQL(@Param("title") String title);
+
+    List<Assignment> findByTitleContaining(String keyword);
 }
