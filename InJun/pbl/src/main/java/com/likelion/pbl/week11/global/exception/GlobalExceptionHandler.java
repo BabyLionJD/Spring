@@ -21,6 +21,12 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage()));
     }
 
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCommentNotFound(CommentNotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage()));
+    }
+
     @ExceptionHandler(DuplicateMemberException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateMember(DuplicateMemberException exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT)

@@ -33,6 +33,9 @@ public class SecurityConfig {
                 ))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/signup", "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/assignments/*/comments").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/assignments/*/comments").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/comments/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/members/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/assignments/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/members/**").permitAll()
