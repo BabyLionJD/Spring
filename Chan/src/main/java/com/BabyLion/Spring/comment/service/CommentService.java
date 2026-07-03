@@ -8,6 +8,7 @@ import com.BabyLion.Spring.comment.dto.CommentResponse;
 import com.BabyLion.Spring.comment.repository.CommentRepository;
 import com.BabyLion.Spring.global.exception.BusinessException;
 import com.BabyLion.Spring.global.exception.ErrorCodeEnum;
+import com.BabyLion.Spring.global.util.SecurityUtil;
 import com.BabyLion.Spring.member.domain.Member;
 import com.BabyLion.Spring.member.repository.MemberRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,9 +33,7 @@ public class CommentService {
 
     @Transactional
     public CommentResponse createComment(Long assignmentId, CommentCreateRequest dto) {
-        Long currentMemberId = (Long) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
 
         Member member = memberRepository.findById(currentMemberId)
                 .orElseThrow(() -> new BusinessException(ErrorCodeEnum.MEMBER_NOT_FOUND));
@@ -57,15 +56,13 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long id){
-        Long currentMemberId = (Long) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
 
         Comment target = commentRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCodeEnum.COMMENT_NOT_FOUND));
 
         if (!target.getMember().getId().equals(currentMemberId)) {
-            throw new BusinessException(ErrorCodeEnum.FORBIDDEN);
+            throw new BusinessException(ErrorCodeEnum.COMMENT_FORBIDDEN);
         }
 
         commentRepository.delete(target);

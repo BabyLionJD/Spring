@@ -13,7 +13,6 @@ public class SignupRequest {
     private String major;
     private int generation;
     private String part;
-    private RoleType roleType;
     private String studentId;
     private String position;
     private String password;
