@@ -37,6 +37,9 @@ public class AuthService {
         if (request.getPassword() == null || request.getPassword().isBlank()) {
             throw new InvalidMemberRequestException("비밀번호는 빈 문자열일 수 없습니다.");
         }
+        if (request.getGeneration() <= 0) {
+            throw new InvalidMemberRequestException("기수는 1 이상이어야 합니다.");
+        }
         if (memberRepository.findByName(request.getName()) != null) {
             throw new DuplicateMemberNameException("이미 존재하는 멤버 이름입니다: " + request.getName());
         }

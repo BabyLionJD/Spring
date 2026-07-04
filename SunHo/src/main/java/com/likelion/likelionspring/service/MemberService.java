@@ -1,15 +1,10 @@
 package com.likelion.likelionspring.service;
 
 import com.likelion.likelionspring.domain.Member;
-import com.likelion.likelionspring.domain.RoleType;
-import com.likelion.likelionspring.dto.LionCreateRequest;
 import com.likelion.likelionspring.dto.LionUpdateRequest;
-import com.likelion.likelionspring.dto.StaffCreateRequest;
 import com.likelion.likelionspring.dto.StaffUpdateRequest;
-import com.likelion.likelionspring.global.exception.DuplicateMemberNameException;
 import com.likelion.likelionspring.global.exception.ErrorCodeEnum;
 import com.likelion.likelionspring.global.exception.ForbiddenException;
-import com.likelion.likelionspring.global.exception.InvalidMemberRequestException;
 import com.likelion.likelionspring.global.exception.MemberNotFoundException;
 import com.likelion.likelionspring.repository.MemberRepository;
 import org.springframework.data.domain.Page;
@@ -25,43 +20,6 @@ public class MemberService {
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
-    }
-
-    private void validateMemberRequest(String name, int generation) {
-        if (name == null || name.isBlank()) {
-            throw new InvalidMemberRequestException("이름은 빈 문자열일 수 없습니다.");
-        }
-        if (generation <= 0) {
-            throw new InvalidMemberRequestException("기수는 1 이상이어야 합니다.");
-        }
-    }
-
-    // Lion 생성
-    @Transactional
-    public Member createLion(LionCreateRequest request) {
-        validateMemberRequest(request.getName(), request.getGeneration());
-        if (memberRepository.findByName(request.getName()) != null) {
-            throw new DuplicateMemberNameException("이미 존재하는 멤버 이름입니다: " + request.getName());
-        }
-        Member member = new Member(
-                request.getName(), request.getMajor(), request.getGeneration(),
-                request.getPart(), RoleType.LION, request.getStudentId(), null
-        );
-        return memberRepository.save(member);
-    }
-
-    // Staff 생성
-    @Transactional
-    public Member createStaff(StaffCreateRequest request) {
-        validateMemberRequest(request.getName(), request.getGeneration());
-        if (memberRepository.findByName(request.getName()) != null) {
-            throw new DuplicateMemberNameException("이미 존재하는 멤버 이름입니다: " + request.getName());
-        }
-        Member member = new Member(
-                request.getName(), request.getMajor(), request.getGeneration(),
-                request.getPart(), RoleType.STAFF, null, request.getPosition()
-        );
-        return memberRepository.save(member);
     }
 
     // Lion 수정

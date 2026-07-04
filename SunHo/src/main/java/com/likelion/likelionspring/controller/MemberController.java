@@ -1,6 +1,5 @@
 package com.likelion.likelionspring.controller;
 
-import com.likelion.likelionspring.domain.Member;
 import com.likelion.likelionspring.dto.*;
 import com.likelion.likelionspring.global.dto.PageResponse;
 import com.likelion.likelionspring.service.MemberService;
@@ -25,20 +24,6 @@ public class MemberController {
         Page<MemberResponse> responses = memberService.findAll(part, pageable)
                 .map(MemberResponse::from);
         return new PageResponse<>(responses);
-    }
-
-    @PostMapping("/lions")
-    @ResponseStatus(HttpStatus.CREATED)
-    public MemberResponse createLion(@RequestBody LionCreateRequest request) {
-        Member member = memberService.createLion(request);
-        return MemberResponse.from(member);
-    }
-
-    @PostMapping("/staffs")
-    @ResponseStatus(HttpStatus.CREATED)
-    public MemberResponse createStaff(@RequestBody StaffCreateRequest request) {
-        Member member = memberService.createStaff(request);
-        return MemberResponse.from(member);
     }
 
     @GetMapping("/{id}")
