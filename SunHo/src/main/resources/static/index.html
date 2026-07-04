@@ -14,6 +14,19 @@
     <p>10주차 | 프론트엔드 - 백엔드 통신 실습</p>
   </header>
 
+  <!-- ===== 로그인 ===== -->
+  <div class="card">
+    <div id="loginForm" class="form-row">
+      <input id="loginName" placeholder="이름">
+      <input id="loginPassword" type="password" placeholder="비밀번호" onkeydown="if(event.key==='Enter') login()">
+      <button class="btn btn-primary" onclick="login()">로그인</button>
+    </div>
+    <div id="loginStatus" class="form-row" style="display:none">
+      <span id="loginStatusName"></span>
+      <button class="btn btn-secondary btn-sm" onclick="logout()">로그아웃</button>
+    </div>
+  </div>
+
   <!-- ===== Tab Navigation ===== -->
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('member')">멤버 관리</button>
@@ -84,13 +97,10 @@
   <!-- ===== Assignment Tab ===== -->
   <div id="tab-assignment" class="tab-content">
 
-    <!-- 1. 과제 등록: POST /members/{memberId}/assignments -->
+    <!-- 1. 과제 등록: POST /assignments (로그인한 사용자 명의로 등록) -->
     <div class="card">
       <h2>과제 등록</h2>
       <div class="form-row">
-        <select id="createAssignmentMemberSelect">
-          <option value="">멤버 선택</option>
-        </select>
         <input id="assignmentTitle" placeholder="과제 제목" style="flex:1">
         <input id="assignmentDesc" placeholder="과제 설명 (선택사항)" style="flex:1">
         <button class="btn btn-primary" onclick="createAssignment()">등록</button>
@@ -226,6 +236,11 @@
     const startTime = performance.now();
     let response;
 
+    const token = getToken();
+    if (token) {
+      options.headers = { ...(options.headers || {}), 'Authorization': `Bearer ${token}` };
+    }
+
     try {
       response = await fetch(url, options);
     } catch (err) {
@@ -358,6 +373,7 @@
     showCreateForm();
   });
 </script>
+<script src="/js/auth.js"></script>
 <script src="/js/member.js"></script>
 <script src="/js/assignment.js"></script>
 

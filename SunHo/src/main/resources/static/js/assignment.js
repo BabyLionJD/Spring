@@ -2,9 +2,9 @@
 
 const AssignmentAPI = {
 
-    // POST /members/{memberId}/assignments
-    async create(memberId, data) {
-        const res = await httpFetch(`/members/${memberId}/assignments`, {
+    // POST /assignments (작성자는 로그인한 사용자로 서버에서 결정됨)
+    async create(data) {
+        const res = await httpFetch('/assignments', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -62,9 +62,6 @@ async function loadMemberSelect() {
             `<option value="${m.id}">${m.name} (${m.roleName})</option>`
         ).join('');
 
-        document.getElementById('createAssignmentMemberSelect').innerHTML =
-            '<option value="">멤버 선택</option>' + options;
-
         document.getElementById('memberAssignmentSelect').innerHTML =
             '<option value="">멤버 선택</option>' + options;
     } catch (e) {
@@ -108,9 +105,8 @@ function renderSingleAssignment(container, a) {
 // ===== 1. 과제 등록 =====
 
 async function createAssignment() {
-    const memberId = document.getElementById('createAssignmentMemberSelect').value;
-    if (!memberId) {
-        alert('멤버를 먼저 선택해주세요.');
+    if (!getCurrentUser()) {
+        alert('로그인 후 이용해주세요.');
         return;
     }
 
@@ -123,7 +119,7 @@ async function createAssignment() {
     }
 
     try {
-        await AssignmentAPI.create(memberId, { title, description });
+        await AssignmentAPI.create({ title, description });
         document.getElementById('assignmentTitle').value = '';
         document.getElementById('assignmentDesc').value = '';
         alert('과제가 등록되었습니다.');
