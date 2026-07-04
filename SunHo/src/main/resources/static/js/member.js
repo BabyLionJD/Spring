@@ -17,19 +17,9 @@ const MemberAPI = {
         return res.json();
     },
 
-    // POST /members/lions
-    async createLion(data) {
-        const res = await httpFetch('/members/lions', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        return res.json();
-    },
-
-    // POST /members/staffs
-    async createStaff(data) {
-        const res = await httpFetch('/members/staffs', {
+    // POST /auth/signup
+    async signup(data) {
+        const res = await httpFetch('/auth/signup', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -116,23 +106,25 @@ function showCreateForm() {
 async function createMember() {
     const roleType = document.getElementById('createRoleType').value;
     const name = document.getElementById('createName').value.trim();
+    const password = document.getElementById('createPassword').value;
     const major = document.getElementById('createMajor').value.trim();
     const generation = parseInt(document.getElementById('createGeneration').value);
     const part = document.getElementById('createPart').value;
 
-    if (!name || !major || !generation || !part) {
+    if (!name || !password || !major || !generation || !part) {
         alert('모든 필드를 입력해주세요.');
         return;
     }
 
+    const payload = { name, password, major, generation, part, roleType };
+    if (roleType === 'LION') {
+        payload.studentId = document.getElementById('createStudentId').value.trim();
+    } else {
+        payload.position = document.getElementById('createPosition').value.trim();
+    }
+
     try {
-        if (roleType === 'LION') {
-            const studentId = document.getElementById('createStudentId').value.trim();
-            await MemberAPI.createLion({ name, major, generation, part, studentId });
-        } else {
-            const position = document.getElementById('createPosition').value.trim();
-            await MemberAPI.createStaff({ name, major, generation, part, position });
-        }
+        await MemberAPI.signup(payload);
         clearCreateForm();
         await loadMembers();
     } catch (e) {
@@ -142,6 +134,7 @@ async function createMember() {
 
 function clearCreateForm() {
     document.getElementById('createName').value = '';
+    document.getElementById('createPassword').value = '';
     document.getElementById('createMajor').value = '';
     document.getElementById('createGeneration').value = '';
     showCreateForm();
