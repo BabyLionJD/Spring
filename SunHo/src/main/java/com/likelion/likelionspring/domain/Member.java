@@ -9,15 +9,11 @@ import java.util.List;
 @Entity
 public class Member {
 
-    @OneToMany(mappedBy = "member",
-    cascade = CascadeType.ALL,
-    orphanRemoval = true)
-    List<Assignment> assignmentList = new ArrayList<>();
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String name;
     private String major;
     private int generation;
@@ -30,6 +26,9 @@ public class Member {
     private String position;   // Staff일 때만 값 존재, Lion은 null
 
     private String password;   // BCrypt로 암호화된 값. 로그인 없이 생성된 멤버는 null
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Assignment> assignmentList = new ArrayList<>();
 
     // JPA 기본 생성자 (필수)
     protected Member() {
