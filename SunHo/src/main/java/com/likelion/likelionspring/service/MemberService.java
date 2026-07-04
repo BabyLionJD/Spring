@@ -50,7 +50,7 @@ public class MemberService {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException("멤버를 찾을 수 없습니다: " + id));
         validateOwner(member, currentMemberId);
-        memberRepository.deleteById(id);
+        memberRepository.delete(member);
     }
 
     private void validateOwner(Member member, Long currentMemberId) {

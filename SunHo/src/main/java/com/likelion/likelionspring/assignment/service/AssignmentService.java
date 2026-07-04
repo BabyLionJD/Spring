@@ -63,7 +63,7 @@ public class AssignmentService {
         Assignment assignment = assignmentRepository.findById(id)
                 .orElseThrow(() -> new AssignmentNotFoundException("과제를 찾을 수 없습니다: " + id));
         validateOwner(assignment, currentMemberId);
-        assignmentRepository.deleteById(id);
+        assignmentRepository.delete(assignment);
     }
 
     private void validateOwner(Assignment assignment, Long currentMemberId) {
