@@ -32,6 +32,7 @@ public class MemberController {
         this.memberService = memberService;
     }
 
+    /*
     @PostMapping("/lions")
     public ResponseEntity<MemberResponse> createLion(@RequestBody LionCreateRequest request) {
         Member member = memberService.createLion(request);
@@ -43,6 +44,8 @@ public class MemberController {
         Member member = memberService.createStaff(request);
         return ResponseEntity.status(201).body(MemberResponse.from(member));
     }
+
+     */
 
     @GetMapping
     public ResponseEntity<PageResponse<MemberResponse>> findAllMembers(

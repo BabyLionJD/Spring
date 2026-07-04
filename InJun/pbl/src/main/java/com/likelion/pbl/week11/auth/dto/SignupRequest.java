@@ -1,11 +1,14 @@
 package com.likelion.pbl.week11.auth.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class SignupRequest {
 
     private String name;
     private String major;
     private int generation;
     private String part;
+    @NotBlank(message = "역할은 필수입니다.")
     private String roleName;
     private String studentId;
     private String position;

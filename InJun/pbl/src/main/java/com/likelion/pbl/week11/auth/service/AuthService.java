@@ -63,15 +63,16 @@ public class AuthService {
 
     private RoleType resolveRoleType(SignupRequest request) {
         String roleName = request.getRoleName();
-        if (roleName != null) {
-            if ("STAFF".equalsIgnoreCase(roleName)) {
-                return RoleType.STAFF;
-            }
-            if ("LION".equalsIgnoreCase(roleName)) {
-                return RoleType.LION;
-            }
+
+        if (roleName == null || roleName.isBlank()) {
+            throw new IllegalArgumentException("roleName은 필수입니다.");
         }
-        return isBlank(request.getPosition()) ? RoleType.LION : RoleType.STAFF;
+
+        try {
+            return RoleType.valueOf(roleName.toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException("roleName은 LION 또는 STAFF만 가능합니다.");
+        }
     }
 
     private boolean isBlank(String value) {
