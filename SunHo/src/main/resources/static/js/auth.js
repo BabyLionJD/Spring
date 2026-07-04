@@ -26,13 +26,21 @@ function getToken() {
     return localStorage.getItem(TOKEN_KEY);
 }
 
+// base64url 문자열을 UTF-8 텍스트로 디코딩 (atob만 쓰면 한글 등 멀티바이트 문자가 깨짐)
+function decodeJwtPayload(base64url) {
+    const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
+    const binary = atob(base64);
+    const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+    return new TextDecoder('utf-8').decode(bytes);
+}
+
 // JWT payload(sub, name, role, exp)를 디코딩. 없거나 만료됐으면 null.
 function getCurrentUser() {
     const token = getToken();
     if (!token) return null;
 
     try {
-        const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+        const payload = JSON.parse(decodeJwtPayload(token.split('.')[1]));
         if (payload.exp && Date.now() >= payload.exp * 1000) {
             clearToken();
             return null;
