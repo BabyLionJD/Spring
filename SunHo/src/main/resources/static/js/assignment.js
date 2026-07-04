@@ -16,7 +16,7 @@ const AssignmentAPI = {
     async getAll() {
         const res = await httpFetch('/assignments');
         const page = await res.json();
-        return page;
+        return page.content;
     },
 
     // GET /members/{memberId}/assignments
