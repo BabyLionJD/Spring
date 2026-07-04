@@ -1,7 +1,11 @@
 package com.likelion.likelionspring.assignment.domain;
 
-import com.likelion.likelionspring.domain.Member;
+import com.likelion.likelionspring.comment.domain.Comment;
+import com.likelion.likelionspring.member.domain.Member;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Assignment {
@@ -16,6 +20,9 @@ public class Assignment {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     protected Assignment(){}
 
@@ -45,5 +52,9 @@ public class Assignment {
 
     public Member getMember() {
         return member;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
     }
 }
