@@ -7,11 +7,7 @@ import com.likelion.pbl.week11.comment.dto.CommentCreateRequest;
 import com.likelion.pbl.week11.comment.dto.CommentResponse;
 import com.likelion.pbl.week11.comment.repository.CommentRepository;
 import com.likelion.pbl.week11.domain.Member;
-import com.likelion.pbl.week11.global.exception.AssignmentNotFoundException;
-import com.likelion.pbl.week11.global.exception.CommentNotFoundException;
-import com.likelion.pbl.week11.global.exception.ErrorCodeEnum;
-import com.likelion.pbl.week11.global.exception.ForbiddenException;
-import com.likelion.pbl.week11.global.exception.MemberNotFoundException;
+import com.likelion.pbl.week11.global.exception.*;
 import com.likelion.pbl.week11.repository.MemberRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -83,6 +79,17 @@ public class CommentService {
 
     private Long getCurrentMemberId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (Long) authentication.getPrincipal();
+
+        if (authentication == null || authentication.getPrincipal() == null) {
+            throw new AuthenticationFailedException("인증 정보가 없습니다.");
+        }
+
+        Object principal = authentication.getPrincipal();
+
+        if (!(principal instanceof Long memberId)) {
+            throw new AuthenticationFailedException("유효하지 않은 인증 정보입니다.");
+        }
+
+        return memberId;
     }
 }

@@ -5,10 +5,7 @@ import com.likelion.pbl.week11.assignment.dto.AssignmentCreateRequest;
 import com.likelion.pbl.week11.assignment.dto.AssignmentUpdateRequest;
 import com.likelion.pbl.week11.assignment.repository.AssignmentRepository;
 import com.likelion.pbl.week11.domain.Member;
-import com.likelion.pbl.week11.global.exception.AssignmentNotFoundException;
-import com.likelion.pbl.week11.global.exception.ErrorCodeEnum;
-import com.likelion.pbl.week11.global.exception.ForbiddenException;
-import com.likelion.pbl.week11.global.exception.MemberNotFoundException;
+import com.likelion.pbl.week11.global.exception.*;
 import com.likelion.pbl.week11.repository.MemberRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -103,6 +100,17 @@ public class AssignmentService {
 
     private Long getCurrentMemberId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (Long) authentication.getPrincipal();
+
+        if (authentication == null || authentication.getPrincipal() == null) {
+            throw new AuthenticationFailedException("인증 정보가 없습니다.");
+        }
+
+        Object principal = authentication.getPrincipal();
+
+        if (!(principal instanceof Long memberId)) {
+            throw new AuthenticationFailedException("유효하지 않은 인증 정보입니다.");
+        }
+
+        return memberId;
     }
 }
