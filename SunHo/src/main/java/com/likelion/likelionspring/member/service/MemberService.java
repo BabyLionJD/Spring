@@ -1,12 +1,12 @@
-package com.likelion.likelionspring.service;
+package com.likelion.likelionspring.member.service;
 
-import com.likelion.likelionspring.domain.Member;
-import com.likelion.likelionspring.dto.LionUpdateRequest;
-import com.likelion.likelionspring.dto.StaffUpdateRequest;
+import com.likelion.likelionspring.member.domain.Member;
+import com.likelion.likelionspring.member.dto.LionUpdateRequest;
+import com.likelion.likelionspring.member.dto.StaffUpdateRequest;
 import com.likelion.likelionspring.global.exception.ErrorCodeEnum;
 import com.likelion.likelionspring.global.exception.ForbiddenException;
 import com.likelion.likelionspring.global.exception.MemberNotFoundException;
-import com.likelion.likelionspring.repository.MemberRepository;
+import com.likelion.likelionspring.member.repository.MemberRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

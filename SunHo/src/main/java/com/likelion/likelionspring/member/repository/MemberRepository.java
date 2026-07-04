@@ -1,6 +1,6 @@
-package com.likelion.likelionspring.repository;
+package com.likelion.likelionspring.member.repository;
 
-import com.likelion.likelionspring.domain.Member;
+import com.likelion.likelionspring.member.domain.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

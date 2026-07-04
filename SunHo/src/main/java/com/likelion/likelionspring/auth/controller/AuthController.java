@@ -4,7 +4,7 @@ import com.likelion.likelionspring.auth.dto.LoginRequest;
 import com.likelion.likelionspring.auth.dto.SignupRequest;
 import com.likelion.likelionspring.auth.dto.TokenResponse;
 import com.likelion.likelionspring.auth.service.AuthService;
-import com.likelion.likelionspring.dto.MemberResponse;
+import com.likelion.likelionspring.member.dto.MemberResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

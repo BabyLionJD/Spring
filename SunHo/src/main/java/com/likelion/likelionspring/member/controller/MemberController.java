@@ -1,8 +1,8 @@
-package com.likelion.likelionspring.controller;
+package com.likelion.likelionspring.member.controller;
 
-import com.likelion.likelionspring.dto.*;
+import com.likelion.likelionspring.member.dto.*;
 import com.likelion.likelionspring.global.dto.PageResponse;
-import com.likelion.likelionspring.service.MemberService;
+import com.likelion.likelionspring.member.service.MemberService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;

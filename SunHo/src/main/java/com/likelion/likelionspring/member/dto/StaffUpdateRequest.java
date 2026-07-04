@@ -1,11 +1,10 @@
-package com.likelion.likelionspring.dto;
+package com.likelion.likelionspring.member.dto;
 
-public class LionUpdateRequest {
-    //name은 경로에서 받으므로 제외
+public class StaffUpdateRequest {
     private String major;
     private int generation;
     private String part;
-    private String studentId;
+    private String position;
 
     public String getMajor() {
         return major;
@@ -19,7 +18,7 @@ public class LionUpdateRequest {
         return part;
     }
 
-    public String getStudentId() {
-        return studentId;
+    public String getPosition() {
+        return position;
     }
 }

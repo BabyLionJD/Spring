@@ -1,6 +1,6 @@
-package com.likelion.likelionspring.dto;
+package com.likelion.likelionspring.member.dto;
 
-import com.likelion.likelionspring.domain.Member;
+import com.likelion.likelionspring.member.domain.Member;
 
 public class MemberResponse {
 

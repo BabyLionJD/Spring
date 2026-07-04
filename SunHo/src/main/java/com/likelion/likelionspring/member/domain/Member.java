@@ -1,4 +1,4 @@
-package com.likelion.likelionspring.domain;
+package com.likelion.likelionspring.member.domain;
 
 import com.likelion.likelionspring.assignment.domain.Assignment;
 import jakarta.persistence.*;

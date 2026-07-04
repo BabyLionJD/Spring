@@ -1,7 +1,7 @@
 package com.likelion.likelionspring.comment.domain;
 
 import com.likelion.likelionspring.assignment.domain.Assignment;
-import com.likelion.likelionspring.domain.Member;
+import com.likelion.likelionspring.member.domain.Member;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

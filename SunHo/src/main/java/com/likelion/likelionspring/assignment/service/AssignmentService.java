@@ -1,13 +1,13 @@
 package com.likelion.likelionspring.assignment.service;
 
 import com.likelion.likelionspring.assignment.domain.Assignment;
-import com.likelion.likelionspring.domain.Member;
+import com.likelion.likelionspring.member.domain.Member;
 import com.likelion.likelionspring.assignment.repository.AssignmentRepository;
 import com.likelion.likelionspring.global.exception.AssignmentNotFoundException;
 import com.likelion.likelionspring.global.exception.ErrorCodeEnum;
 import com.likelion.likelionspring.global.exception.ForbiddenException;
 import com.likelion.likelionspring.global.exception.MemberNotFoundException;
-import com.likelion.likelionspring.repository.MemberRepository;
+import com.likelion.likelionspring.member.repository.MemberRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,6 +1,6 @@
 package com.likelion.likelionspring.global.security;
 
-import com.likelion.likelionspring.domain.Member;
+import com.likelion.likelionspring.member.domain.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
