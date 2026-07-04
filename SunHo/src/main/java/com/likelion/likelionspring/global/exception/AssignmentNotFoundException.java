@@ -1,6 +1,6 @@
 package com.likelion.likelionspring.global.exception;
 
-public class AssignmentNotFoundException extends RuntimeException {
+public class AssignmentNotFoundException extends NotFoundException {
     public AssignmentNotFoundException(String message) {
         super(message);
     }
