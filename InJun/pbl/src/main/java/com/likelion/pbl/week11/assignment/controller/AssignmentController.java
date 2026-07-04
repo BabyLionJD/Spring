@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 @RestController
 public class AssignmentController {
@@ -31,7 +32,7 @@ public class AssignmentController {
     @PostMapping("/members/{memberId}/assignments")
     public ResponseEntity<AssignmentResponse> createAssignment(
             @PathVariable Long memberId,
-            @RequestBody AssignmentCreateRequest request
+            @Valid @RequestBody AssignmentCreateRequest request
     ) {
         Assignment assignment = assignmentService.createAssignment(memberId, request);
         return ResponseEntity.status(201).body(AssignmentResponse.from(assignment));
@@ -84,7 +85,7 @@ public class AssignmentController {
     @PutMapping("/assignments/{id}")
     public ResponseEntity<AssignmentResponse> updateAssignment(
             @PathVariable Long id,
-            @RequestBody AssignmentUpdateRequest request
+            @Valid @RequestBody AssignmentUpdateRequest request
     ) {
         Assignment assignment = assignmentService.updateAssignment(id, request);
         return ResponseEntity.ok(AssignmentResponse.from(assignment));

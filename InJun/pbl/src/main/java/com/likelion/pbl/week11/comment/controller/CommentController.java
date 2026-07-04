@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
+import jakarta.validation.Valid;
 @RestController
 public class CommentController {
 
@@ -25,7 +25,7 @@ public class CommentController {
     @PostMapping("/assignments/{assignmentId}/comments")
     public ResponseEntity<CommentResponse> createComment(
             @PathVariable Long assignmentId,
-            @RequestBody CommentCreateRequest request
+            @Valid @RequestBody CommentCreateRequest request
     ) {
         return ResponseEntity.status(201).body(commentService.createComment(assignmentId, request));
     }
