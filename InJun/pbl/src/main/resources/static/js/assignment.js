@@ -56,7 +56,8 @@ const AssignmentAPI = {
 
 async function loadMemberSelect() {
     try {
-        const members = await MemberAPI.getAll();
+        const data = await MemberAPI.getAll();
+        const members = getMembersFromResponse(data);
         const options = members.map(m =>
             `<option value="${m.id}">${m.name} (${m.roleName})</option>`
         ).join('');

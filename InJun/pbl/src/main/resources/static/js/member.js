@@ -64,14 +64,40 @@ const MemberAPI = {
 
 // ===== Member UI 렌더링 =====
 
+function getMembersFromResponse(data) {
+    if (Array.isArray(data)) {
+        return data;
+    }
+
+    return data?.content || [];
+}
+
 async function loadMembers() {
     const partFilter = document.getElementById('partFilter').value;
     try {
-        const members = await MemberAPI.getAll(partFilter || null);
+        const data = await MemberAPI.getAll(partFilter || null);
+        const members = getMembersFromResponse(data);
+        renderMemberPageInfo(data);
         renderMemberTable(members);
     } catch (e) {
+        renderMemberPageInfo(null);
         renderMemberTable([]);
     }
+}
+
+function renderMemberPageInfo(data) {
+    const pageInfo = document.getElementById('memberPageInfo');
+    if (!pageInfo) return;
+
+    if (!data || Array.isArray(data)) {
+        pageInfo.textContent = '';
+        return;
+    }
+
+    const currentPage = Number.isInteger(data.page) ? data.page + 1 : '-';
+    const totalPages = data.totalPages ?? '-';
+    const totalElements = data.totalElements ?? 0;
+    pageInfo.textContent = `전체 ${totalElements}명 | 현재 ${currentPage}페이지 / 전체 ${totalPages}페이지`;
 }
 
 function renderMemberTable(members) {

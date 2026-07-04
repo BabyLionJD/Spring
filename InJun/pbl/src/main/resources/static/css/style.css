@@ -134,6 +134,13 @@ header p {
     font-size: 14px;
 }
 
+.page-info {
+    margin-left: auto;
+    color: #888;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
 /* ===== Table ===== */
 table {
     width: 100%;
