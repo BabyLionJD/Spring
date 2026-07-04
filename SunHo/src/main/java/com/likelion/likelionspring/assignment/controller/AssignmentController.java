@@ -37,9 +37,9 @@ public class AssignmentController {
         return ResponseEntity.ok(responses);
     }
 
-    @PostMapping("/members/{memberId}/assignments")
+    @PostMapping("/assignments")
     public ResponseEntity<AssignmentResponse> save(
-            @PathVariable Long memberId,
+            @AuthenticationPrincipal Long memberId,
             @RequestBody AssignmentCreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new AssignmentResponse(assignmentService.save(memberId, request.getTitle(), request.getDescription())));

@@ -41,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/members/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/members/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/assignments").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/assignments/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/assignments/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/assignments/*/comments").authenticated()
