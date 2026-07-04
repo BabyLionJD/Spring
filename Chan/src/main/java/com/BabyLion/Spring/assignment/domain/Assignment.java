@@ -1,8 +1,12 @@
 package com.BabyLion.Spring.assignment.domain;
 
+import com.BabyLion.Spring.comment.domain.Comment;
 import com.BabyLion.Spring.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -16,6 +20,8 @@ public class Assignment {
     @ManyToOne
     @JoinColumn(name = "member_id")
     Member member;
+    @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Comment> comments = new ArrayList<>();
 
     protected Assignment(){}
 

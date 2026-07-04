@@ -6,7 +6,9 @@ import com.BabyLion.Spring.member.dto.*;
 import com.BabyLion.Spring.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,20 +20,23 @@ import java.util.List;
 @RestController
 @RequestMapping("/members")
 public class MemberController {
-    @Autowired
-    MemberService memberService;
+
+    private final MemberService memberService;
+
+    public MemberController(MemberService memberService) {
+        this.memberService = memberService;
+    }
 
     @Operation(summary = "Lion 등록", description = "아기사자를 등록합니다.")
     @PostMapping("/lions")
-    public ResponseEntity<?> createLion(@RequestBody LionCreateRequest dto) {
-        Member member = memberService.createLion(dto);
+    public ResponseEntity<MemberResponse> createLion(@Valid @RequestBody LionCreateRequest dto) {        Member member = memberService.createLion(dto);
         MemberResponse response = MemberResponse.from(member);
         return ResponseEntity.status(201).body(response);
     }
 
     @Operation(summary = "Staff 등록", description = "운영진을 등록합니다.")
     @PostMapping("/staffs")
-    public ResponseEntity<?> createStaff(@RequestBody StaffCreateRequest dto) {
+    public ResponseEntity<MemberResponse> createStaff(@Valid @RequestBody StaffCreateRequest dto) {
         Member member = memberService.createStaff(dto);
         MemberResponse response = MemberResponse.from(member);
         return ResponseEntity.status(201).body(response);
@@ -39,7 +44,7 @@ public class MemberController {
 
     @Operation(summary = "단일 조회", description = "이름으로 멤버를 조회합니다.")
     @GetMapping("/{id}")
-    public ResponseEntity<?> getMember(@PathVariable Long id) {
+    public ResponseEntity<MemberResponse> getMember(@PathVariable Long id) {
         Member member = memberService.searchById(id);
         return ResponseEntity.status(200).body(MemberResponse.from(member));
     }
@@ -47,23 +52,23 @@ public class MemberController {
 
     @Operation(summary = "Lion 수정", description = "아기사자 정보를 수정합니다.")
     @PutMapping("/lions/{id}")
-    public ResponseEntity<?> updateLion(@PathVariable Long id, @RequestBody LionUpdateRequest dto) {
+    public ResponseEntity<MemberResponse> updateLion(@PathVariable Long id, @RequestBody LionUpdateRequest dto) {
         Member member = memberService.updateLion(id, dto);
         return ResponseEntity.status(200).body(MemberResponse.from(member));
     }
 
     @Operation(summary = "Staff 수정", description = "운영진 정보를 수정합니다.")
     @PutMapping("/staffs/{id}")
-    public ResponseEntity<?> updateStaff(@PathVariable Long id, @RequestBody StaffUpdateRequest dto) {
+    public ResponseEntity<MemberResponse> updateStaff(@PathVariable Long id, @RequestBody StaffUpdateRequest dto) {
         Member member = memberService.updateStaff(id, dto);
         return ResponseEntity.status(200).body(MemberResponse.from(member));
     }
 
     @Operation(summary = "멤버 삭제", description = "이름으로 멤버를 삭제합니다.")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteMember(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
-        return ResponseEntity.status(200).body("삭제되었습니다.");
+        return ResponseEntity.status(204).build();
     }
 
     @Operation(summary = "전체 조회", description = "모든 멤버를 조회합니다.")
@@ -76,10 +81,9 @@ public class MemberController {
         } else {
             List<Member> members;
             members = memberService.findByPart(part);
-            List<Object> response = new ArrayList<>();
-            for (Member member : members) {
-                response.add(MemberResponse.from(member));
-            }
+            List<MemberResponse> response = members.stream()
+                    .map(MemberResponse::from)
+                    .toList();
             return ResponseEntity.status(200).body(response);
         }
     }

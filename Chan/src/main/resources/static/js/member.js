@@ -191,7 +191,7 @@ async function openEditMemberModal(id) {
     try {
         editingMember = await MemberAPI.getById(id);
         const modal = document.getElementById('editMemberModal');
-        document.getElementById('editName').textContent = editingMember.name;
+        document.getElementById('editName').value = editingMember.name;
         document.getElementById('editMajor').value = editingMember.major;
         document.getElementById('editGeneration').value = editingMember.generation;
         document.getElementById('editPart').value = editingMember.part;
@@ -221,6 +221,7 @@ async function submitEditMember() {
     if (!editingMember) return;
 
     const data = {
+        name: document.getElementById('editName').value.trim(),  // 추가
         major: document.getElementById('editMajor').value.trim(),
         generation: parseInt(document.getElementById('editGeneration').value),
         part: document.getElementById('editPart').value

@@ -1,14 +1,11 @@
 package com.BabyLion.Spring.auth.service;
 
-import com.BabyLion.Spring.assignment.repository.AssignmentRepository;
 import com.BabyLion.Spring.auth.dto.LoginRequest;
 import com.BabyLion.Spring.auth.dto.SignupRequest;
 import com.BabyLion.Spring.auth.jwt.JwtProvider;
-import com.BabyLion.Spring.global.exeption.*;
+import com.BabyLion.Spring.global.exception.*;
 import com.BabyLion.Spring.member.domain.Member;
 import com.BabyLion.Spring.member.domain.RoleType;
-import com.BabyLion.Spring.member.dto.LionCreateRequest;
-import com.BabyLion.Spring.member.dto.StaffCreateRequest;
 import com.BabyLion.Spring.member.repository.MemberRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,46 +25,35 @@ public class AuthService {
         this.jwtProvider = jwtProvider;
     }
 
-
+    @Transactional
     public Member signup(SignupRequest dto){
+
+        if (memberRepository.existsByLoginId(dto.getLoginId())) {
+            throw new BusinessException(ErrorCodeEnum.DUPLICATE_LOGIN_ID);
+        }
         String rawPassword = dto.getPassword();
         String encPassword = passwordEncoder.encode(rawPassword);
 
-        if (dto.getRoleType() == RoleType.LION){
-            Member member = new Member(
-                    dto.getName(),
-                    dto.getMajor(),
-                    dto.getPart(),
-                    dto.getGeneration(),
-                    RoleType.LION,
-                    dto.getStudentId(),
-                    null, encPassword, dto.getLoginId());
+        Member member = new Member(
+                dto.getName(),
+                dto.getMajor(),
+                dto.getPart(),
+                dto.getGeneration(),
+                RoleType.LION,
+                dto.getStudentId(),
+                null, encPassword, dto.getLoginId());
 
-            return memberRepository.save(member);
-        }else{
-
-            Member member = new Member(
-                    dto.getName(),
-                    dto.getMajor(),
-                    dto.getPart(),
-                    dto.getGeneration(),
-                    RoleType.STAFF,
-                    null,
-                    dto.getPosition(), encPassword, dto.getLoginId());
-            return memberRepository.save(member);
-        }
-
+        return memberRepository.save(member);
     }
 
-    public String login(LoginRequest dto){
-        String password = dto.getPassword();
-        String id = dto.getLoginId();
-        Member member = memberRepository.findByLoginId(id)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCodeEnum.MEMBER_NOT_FOUND));
+    public String login(LoginRequest dto) {
+        Member member = memberRepository.findByLoginId(dto.getLoginId())
+                .orElseThrow(() -> new BusinessException(ErrorCodeEnum.LOGIN_FAILED));
 
         if (!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
-            throw new InvalidPasswordException(ErrorCodeEnum.INVALID_PASSWORD);
+            throw new BusinessException(ErrorCodeEnum.LOGIN_FAILED);
         }
+
         return jwtProvider.createToken(member.getId());
     }
 }

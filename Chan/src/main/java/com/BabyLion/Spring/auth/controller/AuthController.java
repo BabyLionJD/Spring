@@ -27,7 +27,7 @@ public class AuthController {
 
     @Operation(summary = "회원가입", description = "회원가입 테스트")
     @PostMapping("/auth/signup")
-    public ResponseEntity<?> signup(@RequestBody SignupRequest dto) {
+    public ResponseEntity<MemberResponse> signup(@RequestBody SignupRequest dto) {
         Member member = authService.signup(dto);
         MemberResponse response = MemberResponse.from(member);
         return ResponseEntity.status(201).body(response);
@@ -35,9 +35,9 @@ public class AuthController {
 
     @Operation(summary = "로그인", description = "로그인 테스트")
     @PostMapping("/auth/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest dto){
+    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest dto){
         String token = authService.login(dto);
-        return ResponseEntity.ok(new TokenResponse(authService.login(dto)));
+        return ResponseEntity.ok(new TokenResponse(token));
     }
 
 }

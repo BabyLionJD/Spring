@@ -6,17 +6,14 @@ import com.BabyLion.Spring.assignment.dto.AssignmentResponse;
 import com.BabyLion.Spring.assignment.dto.AssignmentUpdateRequest;
 import com.BabyLion.Spring.assignment.repository.AssignmentRepository;
 import com.BabyLion.Spring.global.dto.PageResponse;
-import com.BabyLion.Spring.global.exeption.AssignmentNotFoundException;
-import com.BabyLion.Spring.global.exeption.ErrorCodeEnum;
-import com.BabyLion.Spring.global.exeption.ForbiddenException;
-import com.BabyLion.Spring.global.exeption.MemberNotFoundException;
+import com.BabyLion.Spring.global.exception.BusinessException;
+import com.BabyLion.Spring.global.exception.ErrorCodeEnum;
+import com.BabyLion.Spring.global.util.SecurityUtil;
 import com.BabyLion.Spring.member.domain.Member;
-import com.BabyLion.Spring.member.dto.MemberResponse;
 import com.BabyLion.Spring.member.repository.MemberRepository;
 import com.BabyLion.Spring.member.service.MemberService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +35,7 @@ public class AssignmentService {
     @Transactional
     public Assignment createAssignment(Long memberId, AssignmentCreateRequest dto){
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCodeEnum.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCodeEnum.MEMBER_NOT_FOUND));
 
         Assignment assignment = new Assignment(dto.getTitle(), dto.getDescription(), member);
         return assignmentRepository.save(assignment);
@@ -46,13 +43,13 @@ public class AssignmentService {
 
     public List<Assignment> memberAssignment(Long memberId){
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCodeEnum.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCodeEnum.MEMBER_NOT_FOUND));
         return assignmentRepository.findByMemberId(memberId);
     }
 
     public Assignment searchAssignment(Long id){
         return assignmentRepository.findById(id)
-                .orElseThrow(() -> new AssignmentNotFoundException(ErrorCodeEnum.ASSIGNMENT_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCodeEnum.ASSIGNMENT_NOT_FOUND));
     }
 
     public List<Assignment> searchByTitle(String keyword) {
@@ -62,15 +59,13 @@ public class AssignmentService {
 
     @Transactional
     public Assignment updateAssignment(Long id, AssignmentUpdateRequest dto) {
-        Long currentMemberId = (Long) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
 
         Assignment target = assignmentRepository.findById(id)
-                .orElseThrow(() -> new AssignmentNotFoundException(ErrorCodeEnum.ASSIGNMENT_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCodeEnum.ASSIGNMENT_NOT_FOUND));
 
         if (!target.getMember().getId().equals(currentMemberId)) {
-            throw new ForbiddenException(ErrorCodeEnum.FORBIDDEN);
+            throw new BusinessException(ErrorCodeEnum.ASSIGNMENT_FORBIDDEN);
         }
 
         // 4. 수정
@@ -80,15 +75,13 @@ public class AssignmentService {
 
     @Transactional
     public void deleteAssignment(Long id){
-        Long currentMemberId = (Long) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
 
         Assignment target = assignmentRepository.findById(id)
-                .orElseThrow(() -> new AssignmentNotFoundException(ErrorCodeEnum.ASSIGNMENT_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCodeEnum.ASSIGNMENT_NOT_FOUND));
 
         if (!target.getMember().getId().equals(currentMemberId)) {
-            throw new ForbiddenException(ErrorCodeEnum.FORBIDDEN);
+            throw new BusinessException(ErrorCodeEnum.ASSIGNMENT_FORBIDDEN);
         }
 
         assignmentRepository.delete(target);

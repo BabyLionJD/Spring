@@ -1,7 +1,8 @@
 package com.BabyLion.Spring.member.service;
 
 import com.BabyLion.Spring.global.dto.PageResponse;
-import com.BabyLion.Spring.global.exeption.*;
+import com.BabyLion.Spring.global.exception.*;
+import com.BabyLion.Spring.global.util.SecurityUtil;
 import com.BabyLion.Spring.member.domain.Member;
 import com.BabyLion.Spring.member.domain.RoleType;
 import com.BabyLion.Spring.member.dto.*;
@@ -28,14 +29,8 @@ public class MemberService {
 
     @Transactional
     public Member createLion(LionCreateRequest dto){
-        if (!dto.getStudentId().matches("[0-9]+")){
-            throw new InvalidStudentIdException(ErrorCodeEnum.INVALID_STUDENT_ID);
-        } else if (repository.existsByName(dto.getName())) {
-            throw new DuplicateMemberException(ErrorCodeEnum.DUPLICATE_MEMBER_NAME);
-        } else if(dto.getName().isEmpty()){
-            throw new EmptyNameException(ErrorCodeEnum.EMPTY_NAME);
-        } else if (dto.getGeneration() <= 0) {
-            throw new InvalidGenerationException(ErrorCodeEnum.INVALID_GENERATION);
+        if (repository.existsByName(dto.getName())) {
+            throw new BusinessException(ErrorCodeEnum.DUPLICATE_MEMBER_NAME);
         }
 
         Member member = new Member(
@@ -54,7 +49,7 @@ public class MemberService {
     public Member createStaff(StaffCreateRequest dto){
 
         if(repository.existsByName(dto.getName())){
-            throw new DuplicateMemberException(ErrorCodeEnum.DUPLICATE_MEMBER_NAME);
+            throw new BusinessException(ErrorCodeEnum.DUPLICATE_MEMBER_NAME);
         }
 
         Member member = new Member(
@@ -70,32 +65,51 @@ public class MemberService {
 
     @Transactional
     public Member updateLion(Long id, LionUpdateRequest dto) {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+
         Member member = repository.findById(id)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCodeEnum.MEMBER_NOT_FOUND));
-        member.updateInfo(member.getName(), dto.getMajor(), dto.getPart(), dto.getGeneration());
+                .orElseThrow(() -> new BusinessException(ErrorCodeEnum.MEMBER_NOT_FOUND));
+
+        if (!member.getId().equals(currentMemberId)) {
+            throw new BusinessException(ErrorCodeEnum.MEMBER_FORBIDDEN);
+        }
+        member.updateInfo(dto.getName(), dto.getMajor(), dto.getPart(), dto.getGeneration());
         member.updateStudentID(dto.getStudentId());
         return repository.save(member);
     }
 
     @Transactional
     public Member updateStaff(Long id, StaffUpdateRequest dto) {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+
         Member member = repository.findById(id)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCodeEnum.MEMBER_NOT_FOUND));
-        member.updateInfo(member.getName(), dto.getMajor(), dto.getPart(), dto.getGeneration());
+                .orElseThrow(() -> new BusinessException(ErrorCodeEnum.MEMBER_NOT_FOUND));
+
+        if (!member.getId().equals(currentMemberId)) {
+            throw new BusinessException(ErrorCodeEnum.MEMBER_FORBIDDEN);
+        }
+        member.updateInfo(dto.getName(), dto.getMajor(), dto.getPart(), dto.getGeneration());
         member.updatePosition(dto.getPosition());
         return repository.save(member);
     }
 
     @Transactional
     public void deleteMember(Long id) {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId();
+
         Member member = repository.findById(id)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCodeEnum.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCodeEnum.MEMBER_NOT_FOUND));
+
+        if (!member.getId().equals(currentMemberId)) {
+            throw new BusinessException(ErrorCodeEnum.MEMBER_FORBIDDEN);
+        }
+
         repository.delete(member);
     }
 
     public Member searchById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCodeEnum.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCodeEnum.MEMBER_NOT_FOUND));
     }
 
     public PageResponse<MemberResponse> getAllMembers(Pageable pageable) {

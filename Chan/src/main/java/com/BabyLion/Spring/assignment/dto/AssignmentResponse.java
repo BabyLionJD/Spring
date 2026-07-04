@@ -1,11 +1,7 @@
 package com.BabyLion.Spring.assignment.dto;
 
 import com.BabyLion.Spring.assignment.domain.Assignment;
-import com.BabyLion.Spring.member.domain.Member;
 import lombok.Getter;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -32,12 +28,5 @@ public class AssignmentResponse {
                 assignment.getDescription(),
                 assignment.getMember().getId(),
                 assignment.getMember().getName());
-    }
-
-    public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
-        List<Assignment> findByMemberId(Long memberId);
-
-        @Query("SELECT a FROM Assignment a WHERE a.title LIKE %:keyword%")
-        List<Assignment> findByTitleContaining(@Param("keyword") String keyword);
     }
 }

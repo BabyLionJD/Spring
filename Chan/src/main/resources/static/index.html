@@ -322,13 +322,6 @@
         <button class="modal-close" onclick="closeSignupModal()">✕</button>
         <h3>🦁 회원가입</h3>
         <div class="form-row">
-            <label>역할</label>
-            <select id="signupRoleType" onchange="onSignupRoleChange()">
-                <option value="LION">LION (아기사자)</option>
-                <option value="STAFF">STAFF (운영진)</option>
-            </select>
-        </div>
-        <div class="form-row">
             <label>이름</label>
             <input id="signupName" placeholder="이름">
         </div>
@@ -349,8 +342,7 @@
                 <option value="기획/디자인">기획/디자인</option>
             </select>
         </div>
-        <!-- LION/STAFF에 따라 달라지는 필드 -->
-        <div id="signupExtraField" class="form-row">
+        <div class="form-row">
             <label>학번</label>
             <input id="signupStudentId" placeholder="학번">
         </div>
@@ -372,7 +364,11 @@
 <!-- ===== Member 수정 Modal ===== -->
 <div id="editMemberModal" class="modal-overlay">
     <div class="modal">
-        <h3><span id="editName"></span> 수정</h3>
+        <h3>멤버 수정</h3>
+        <div class="form-row">
+            <label>이름</label>
+            <input id="editName">
+        </div>
         <div class="form-row">
             <label>전공</label>
             <input id="editMajor">
@@ -472,65 +468,38 @@
     }
     function closeSignupModal() {
         document.getElementById('signupModal').classList.remove('active');
-        // 폼 초기화
-        ['signupName','signupMajor','signupGeneration','signupLoginId','signupPassword'].forEach(id => {
+        ['signupName', 'signupMajor', 'signupGeneration', 'signupLoginId', 'signupPassword', 'signupStudentId'].forEach(id => {
             document.getElementById(id).value = '';
         });
-        document.getElementById('signupRoleType').value = 'LION';
         document.getElementById('signupPart').value = '';
-        onSignupRoleChange();
-    }
-
-    function onSignupRoleChange() {
-        const role = document.getElementById('signupRoleType').value;
-        const extraField = document.getElementById('signupExtraField');
-        if (role === 'LION') {
-            extraField.innerHTML = `
-            <label>학번</label>
-            <input id="signupStudentId" placeholder="학번">
-        `;
-        } else {
-            extraField.innerHTML = `
-            <label>직책</label>
-            <input id="signupPosition" placeholder="직책 (대표, 부대표 등)">
-        `;
-        }
     }
 
     async function doSignup() {
-        const roleType = document.getElementById('signupRoleType').value;
         const name = document.getElementById('signupName').value.trim();
         const major = document.getElementById('signupMajor').value.trim();
         const generation = parseInt(document.getElementById('signupGeneration').value);
         const part = document.getElementById('signupPart').value;
+        const studentId = document.getElementById('signupStudentId').value.trim();
         const loginId = document.getElementById('signupLoginId').value.trim();
         const password = document.getElementById('signupPassword').value.trim();
 
-        if (!name || !major || !generation || !part || !loginId || !password) {
+        if (!name || !major || !generation || !part || !studentId || !loginId || !password) {
             alert('모든 필드를 입력해주세요.');
             return;
-        }
-
-        const body = { name, major, generation, part, roleType, loginId, password };
-
-        if (roleType === 'LION') {
-            body.studentId = document.getElementById('signupStudentId').value.trim();
-        } else {
-            body.position = document.getElementById('signupPosition').value.trim();
         }
 
         try {
             await httpFetch('/auth/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
+                body: JSON.stringify({ name, major, generation, part, studentId, loginId, password })
+                // roleType 제거
             });
             closeSignupModal();
             showToast('회원가입 완료! 로그인해주세요.', 'success');
             openLoginModal();
         } catch (e) {}
     }
-
     // ===== HTTP 통신 래퍼 — 토큰 자동 주입 =====
     async function httpFetch(url, options = {}) {
         const method = (options.method || 'GET').toUpperCase();
