@@ -1,8 +1,11 @@
 package com.likelion.pbl.week11.assignment.domain;
 
-
+import com.likelion.pbl.week11.comment.domain.Comment;
 import com.likelion.pbl.week11.domain.Member;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Assignment {
@@ -17,6 +20,9 @@ public class Assignment {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToMany(mappedBy = "assignment", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     protected Assignment() {
     }

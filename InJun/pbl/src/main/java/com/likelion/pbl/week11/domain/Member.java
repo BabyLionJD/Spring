@@ -1,6 +1,7 @@
 package com.likelion.pbl.week11.domain;
 
 import com.likelion.pbl.week11.assignment.domain.Assignment;
+import com.likelion.pbl.week11.comment.domain.Comment;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -25,11 +26,11 @@ public class Member {
     private String position;
     private String password;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Assignment> assignments = new ArrayList<>();
 
-    protected Member() {
-    }
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     public Member(String name, String major, int generation, String part,
                   RoleType roleType, String studentId, String position) {
