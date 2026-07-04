@@ -9,6 +9,7 @@ import com.likelion.pbl.week11.global.dto.PageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +36,7 @@ public class AssignmentController {
             @Valid @RequestBody AssignmentCreateRequest request
     ) {
         Assignment assignment = assignmentService.createAssignment(memberId, request);
-        return ResponseEntity.status(201).body(AssignmentResponse.from(assignment));
+        return ResponseEntity.status(HttpStatus.CREATED).body(AssignmentResponse.from(assignment));
     }
 
     @GetMapping("/assignments")

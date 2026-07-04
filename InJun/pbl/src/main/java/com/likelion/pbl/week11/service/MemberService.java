@@ -42,7 +42,7 @@ public class MemberService {
                 null
         );
 
-        return memberRepository.save(member);
+        return member;
     }
 
     @Transactional

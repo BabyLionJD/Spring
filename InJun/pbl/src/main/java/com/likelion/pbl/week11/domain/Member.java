@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
 @Entity
 public class Member {
@@ -65,12 +66,12 @@ public class Member {
 
     public void addAssignment(Assignment assignment) {
         assignments.add(assignment);
-        assignment.setMember(this);
+        assignment.assignMember(this);
     }
 
     public void removeAssignment(Assignment assignment) {
         assignments.remove(assignment);
-        assignment.setMember(null);
+        assignment.assignMember(null);
     }
 
     public Long getId() {
@@ -110,6 +111,6 @@ public class Member {
     }
 
     public List<Assignment> getAssignments() {
-        return assignments;
+        return Collections.unmodifiableList(assignments);
     }
 }

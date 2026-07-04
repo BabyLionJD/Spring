@@ -3,6 +3,7 @@ package com.likelion.pbl.week11.comment.controller;
 import com.likelion.pbl.week11.comment.dto.CommentCreateRequest;
 import com.likelion.pbl.week11.comment.dto.CommentResponse;
 import com.likelion.pbl.week11.comment.service.CommentService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +28,7 @@ public class CommentController {
             @PathVariable Long assignmentId,
             @Valid @RequestBody CommentCreateRequest request
     ) {
-        return ResponseEntity.status(201).body(commentService.createComment(assignmentId, request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(assignmentId, request));
     }
 
     @GetMapping("/assignments/{assignmentId}/comments")
