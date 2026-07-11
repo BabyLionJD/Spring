@@ -27,23 +27,53 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(
-                        (request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)
-                ))
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .exceptionHandling(exception ->
+                        exception.authenticationEntryPoint(
+                                (request, response, authException) ->
+                                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED)
+                        )
+                )
                 .authorizeHttpRequests(auth -> auth
+                        // 홈페이지 및 정적 리소스 허용
+                        .requestMatchers(
+                                "/",
+                                "/index.html",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**",
+                                "/favicon.ico"
+                        ).permitAll()
+
+                        // Swagger 허용
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**"
+                        ).permitAll()
+
+                        // 인증 관련
                         .requestMatchers("/auth/signup", "/auth/login").permitAll()
+
+                        // 댓글
                         .requestMatchers(HttpMethod.GET, "/assignments/*/comments").permitAll()
                         .requestMatchers(HttpMethod.POST, "/assignments/*/comments").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/comments/**").authenticated()
+
+                        // 회원
                         .requestMatchers(HttpMethod.GET, "/members/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/assignments/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/members/**").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/assignments/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/members/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/members/**").authenticated()
+
+                        // 과제
+                        .requestMatchers(HttpMethod.GET, "/assignments/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/assignments/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/assignments/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/assignments/**").authenticated()
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
