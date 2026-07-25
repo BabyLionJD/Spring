@@ -5,12 +5,11 @@ import com.likelion.pbl.week11.assignment.dto.AssignmentCreateRequest;
 import com.likelion.pbl.week11.assignment.dto.AssignmentUpdateRequest;
 import com.likelion.pbl.week11.assignment.repository.AssignmentRepository;
 import com.likelion.pbl.week11.domain.Member;
-import com.likelion.pbl.week11.global.exception.*;
+import com.likelion.pbl.week11.global.exception.AssignmentNotFoundException;
+import com.likelion.pbl.week11.global.exception.MemberNotFoundException;
 import com.likelion.pbl.week11.repository.MemberRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,7 +67,6 @@ public class AssignmentService {
     @Transactional
     public Assignment updateAssignment(Long id, AssignmentUpdateRequest request) {
         Assignment assignment = getAssignment(id);
-        validateOwner(assignment);
         assignment.updateInfo(request.getTitle(), request.getDescription());
         return assignment;
     }
@@ -76,41 +74,20 @@ public class AssignmentService {
     @Transactional
     public void deleteAssignment(Long id) {
         Assignment assignment = getAssignment(id);
-        validateOwner(assignment);
         assignmentRepository.delete(assignment);
     }
 
     private Member getMember(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException("해당 멤버를 찾을 수 없습니다. id: " + memberId));
+                .orElseThrow(() -> new MemberNotFoundException(
+                        "해당 멤버를 찾을 수 없습니다. id: " + memberId
+                ));
     }
 
     private Assignment getAssignment(Long id) {
         return assignmentRepository.findById(id)
-                .orElseThrow(() -> new AssignmentNotFoundException("해당 과제를 찾을 수 없습니다. id: " + id));
-    }
-
-    private void validateOwner(Assignment assignment) {
-        Long currentMemberId = getCurrentMemberId();
-        Long ownerId = assignment.getMember().getId();
-        if (!ownerId.equals(currentMemberId)) {
-            throw new ForbiddenException(ErrorCodeEnum.FORBIDDEN);
-        }
-    }
-
-    private Long getCurrentMemberId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || authentication.getPrincipal() == null) {
-            throw new AuthenticationFailedException("인증 정보가 없습니다.");
-        }
-
-        Object principal = authentication.getPrincipal();
-
-        if (!(principal instanceof Long memberId)) {
-            throw new AuthenticationFailedException("유효하지 않은 인증 정보입니다.");
-        }
-
-        return memberId;
+                .orElseThrow(() -> new AssignmentNotFoundException(
+                        "해당 과제를 찾을 수 없습니다. id: " + id
+                ));
     }
 }

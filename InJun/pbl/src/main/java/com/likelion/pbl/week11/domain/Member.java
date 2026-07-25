@@ -33,6 +33,9 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
+    protected Member() {
+    }
+
     public Member(String name, String major, int generation, String part,
                   RoleType roleType, String studentId, String position) {
         this.name = name;

@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -29,26 +30,31 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String token = resolveToken(request);
 
-        if (token != null) {
-            if (!jwtProvider.validateToken(token)) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
-            }
-            Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    jwtProvider.getMemberId(token),
-                    null,
-                    List.of()
-            );
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (token == null) {
+            filterChain.doFilter(request, response);
+            return;
         }
+
+        if (!jwtProvider.validateToken(token)) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                jwtProvider.getMemberId(token),
+                null,
+                List.of()
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
     }
 
     private String resolveToken(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
-        if (authorization != null && authorization.startsWith(BEARER_PREFIX)) {
-            return authorization.substring(BEARER_PREFIX.length());
+        if (StringUtils.hasText(authorization) && authorization.startsWith(BEARER_PREFIX)) {
+            String token = authorization.substring(BEARER_PREFIX.length()).trim();
+            return StringUtils.hasText(token) ? token : null;
         }
         return null;
     }

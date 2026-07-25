@@ -14,6 +14,50 @@
         <p>10주차 | 프론트엔드 - 백엔드 통신 실습</p>
     </header>
 
+    <div class="card auth-card">
+        <h2>인증 테스트</h2>
+        <p class="auth-help auth-notice">
+            아래 회원가입은 <code>POST /auth/signup</code>으로 <strong>로그인 가능한 계정</strong>을 생성합니다.
+            회원가입에 성공하면 입력한 이름과 비밀번호로 바로 로그인합니다.
+        </p>
+        <div class="form-row">
+            <input id="signupName" placeholder="이름">
+            <input id="signupMajor" placeholder="전공">
+            <input id="signupGeneration" type="number" placeholder="기수" min="1">
+            <select id="signupPart">
+                <option value="">파트 선택</option>
+                <option value="백엔드">백엔드</option>
+                <option value="프론트엔드">프론트엔드</option>
+                <option value="기획/디자인">기획/디자인</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <select id="signupRoleName" onchange="showSignupExtraField()">
+                <option value="LION">LION (아기사자)</option>
+                <option value="STAFF">STAFF (운영진)</option>
+            </select>
+            <span id="signupExtraField" class="auth-extra-field">
+                <input id="signupStudentId" placeholder="학번">
+            </span>
+            <input id="signupPassword" type="password" placeholder="비밀번호">
+            <button class="btn btn-primary" onclick="signup()">회원가입 후 로그인</button>
+        </div>
+        <hr class="auth-divider">
+        <h3 class="auth-subtitle">기존 계정 로그인</h3>
+        <div class="form-row">
+            <input id="loginName" placeholder="이름">
+            <input id="loginPassword" type="password" placeholder="비밀번호">
+            <button class="btn btn-primary" onclick="login()">로그인</button>
+            <button class="btn btn-secondary" onclick="logout()">로그아웃</button>
+            <span id="authStatus">로그아웃됨</span>
+        </div>
+        <p class="auth-help">
+            주의: 아래의 <strong>멤버 등록</strong>(<code>POST /members/lions</code>,
+            <code>POST /members/staffs</code>)은 목록·과제 관리용 멤버만 만들며 로그인 비밀번호를 생성하지 않습니다.
+            로그인 테스트에는 반드시 위 회원가입을 사용해주세요.
+        </p>
+    </div>
+
     <!-- ===== Tab Navigation ===== -->
     <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('member')">멤버 관리</button>
@@ -26,6 +70,9 @@
         <!-- 멤버 등록 폼 -->
         <div class="card">
             <h2>멤버 등록</h2>
+            <p class="auth-help member-notice">
+                목록·과제 관리용 멤버 등록입니다. 이 폼으로 등록한 멤버는 로그인 계정이 아닙니다.
+            </p>
             <div class="form-row">
                 <select id="createRoleType" onchange="showCreateForm()">
                     <option value="LION">LION (아기사자)</option>
@@ -84,7 +131,7 @@
     <!-- ===== Assignment Tab ===== -->
     <div id="tab-assignment" class="tab-content">
 
-        <!-- 1. 과제 등록: POST /members/{memberId}/assignments -->
+        <!-- 1. 과제 등록: POST /assignments -->
         <div class="card">
             <h2>과제 등록</h2>
             <div class="form-row">
@@ -226,6 +273,21 @@
         const startTime = performance.now();
         let response;
 
+        const headers = new Headers(options.headers || {});
+        const token = localStorage.getItem('accessToken');
+        const isPublicTestApi = url === '/members'
+            || url.startsWith('/members?')
+            || url.startsWith('/members/')
+            || url === '/assignments'
+            || url.startsWith('/assignments?')
+            || url.startsWith('/assignments/')
+            || url.startsWith('/auth/');
+
+        if (!headers.has('Authorization') && !isPublicTestApi && token && token.trim()) {
+            headers.set('Authorization', `Bearer ${token.trim()}`);
+        }
+        options = { ...options, headers };
+
         try {
             response = await fetch(url, options);
         } catch (err) {
@@ -354,10 +416,13 @@
 
     // ===== 페이지 로드 시 =====
     document.addEventListener('DOMContentLoaded', () => {
+        refreshAuthState();
         loadMembers();
         showCreateForm();
+        showSignupExtraField();
     });
 </script>
+<script src="/js/auth.js"></script>
 <script src="/js/member.js"></script>
 <script src="/js/assignment.js"></script>
 

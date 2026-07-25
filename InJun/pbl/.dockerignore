@@ -4,5 +4,5 @@
 build
 .idea
 *.iml
-.env
+src/main/java/com/likelion/pbl/.env
 README.md

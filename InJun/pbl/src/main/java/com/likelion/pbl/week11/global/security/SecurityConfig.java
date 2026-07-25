@@ -1,9 +1,9 @@
 package com.likelion.pbl.week11.global.security;
 
+import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -37,14 +37,20 @@ public class SecurityConfig {
                         )
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         // 홈페이지 및 정적 리소스 허용
                         .requestMatchers(
                                 "/",
+                                "/error",
                                 "/index.html",
                                 "/css/**",
                                 "/js/**",
-                                "/images/**",
-                                "/favicon.ico"
+                                "/auth/**",
+                                "/members",
+                                "/members/**",
+                                "/assignments",
+                                "/assignments/**",
+                                "/error"
                         ).permitAll()
 
                         // Swagger 허용
@@ -55,25 +61,9 @@ public class SecurityConfig {
                         ).permitAll()
 
                         // 인증 관련
-                        .requestMatchers("/auth/signup", "/auth/login").permitAll()
-
                         // 댓글
-                        .requestMatchers(HttpMethod.GET, "/assignments/*/comments").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/assignments/*/comments").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/comments/**").authenticated()
-
                         // 회원
-                        .requestMatchers(HttpMethod.GET, "/members/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/members/**").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/members/**").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/members/**").authenticated()
-
                         // 과제
-                        .requestMatchers(HttpMethod.GET, "/assignments/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/assignments/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/assignments/**").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/assignments/**").authenticated()
-
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

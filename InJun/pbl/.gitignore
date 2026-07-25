@@ -39,7 +39,7 @@ out/
 docs/
 
 
-.env
+src/main/java/com/likelion/pbl/.env
 build/
 .gradle/
 *.log

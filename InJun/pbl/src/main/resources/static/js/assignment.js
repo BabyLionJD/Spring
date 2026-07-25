@@ -2,12 +2,12 @@
 
 const AssignmentAPI = {
 
-    // POST /members/{memberId}/assignments
+    // POST /assignments
     async create(memberId, data) {
-        const res = await httpFetch(`/members/${memberId}/assignments`, {
+        const res = await httpFetch('/assignments', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            body: JSON.stringify({ memberId: Number(memberId), ...data })
         });
         return res.json();
     },
@@ -48,9 +48,15 @@ const AssignmentAPI = {
 
     // DELETE /assignments/{id}
     async delete(id) {
-        await httpFetch(`/assignments/${id}`, { method: 'DELETE' });
+        await httpFetch(`/assignments/${id}`, {
+            method: 'DELETE'
+        });
     }
 };
+
+function getAssignmentsFromResponse(data) {
+    return Array.isArray(data) ? data : (data?.content || []);
+}
 
 // ===== 공통: 멤버 드롭다운 로드 =====
 
@@ -137,7 +143,7 @@ async function createAssignment() {
 async function loadAllAssignments() {
     const container = document.getElementById('allAssignmentList');
     try {
-        const assignments = await AssignmentAPI.getAll();
+        const assignments = getAssignmentsFromResponse(await AssignmentAPI.getAll());
         renderAssignments(container, assignments);
     } catch (e) {
         container.innerHTML = '<div class="empty-msg">조회 실패</div>';
@@ -156,7 +162,7 @@ async function loadMemberAssignments() {
     }
 
     try {
-        const assignments = await AssignmentAPI.getByMember(memberId);
+        const assignments = getAssignmentsFromResponse(await AssignmentAPI.getByMember(memberId));
         renderAssignments(container, assignments);
     } catch (e) {
         container.innerHTML = '<div class="empty-msg">조회 실패</div>';
@@ -194,7 +200,7 @@ async function searchAssignments() {
     }
 
     try {
-        const results = await AssignmentAPI.search(keyword);
+        const results = getAssignmentsFromResponse(await AssignmentAPI.search(keyword));
         renderAssignments(container, results);
     } catch (e) {
         container.innerHTML = '<div class="empty-msg">검색 실패</div>';

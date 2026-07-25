@@ -2,6 +2,7 @@ package com.likelion.pbl.week11.assignment.controller;
 
 import com.likelion.pbl.week11.assignment.domain.Assignment;
 import com.likelion.pbl.week11.assignment.dto.AssignmentCreateRequest;
+import com.likelion.pbl.week11.assignment.dto.AssignmentCreateWithMemberRequest;
 import com.likelion.pbl.week11.assignment.dto.AssignmentResponse;
 import com.likelion.pbl.week11.assignment.dto.AssignmentUpdateRequest;
 import com.likelion.pbl.week11.assignment.service.AssignmentService;
@@ -36,6 +37,17 @@ public class AssignmentController {
             @Valid @RequestBody AssignmentCreateRequest request
     ) {
         Assignment assignment = assignmentService.createAssignment(memberId, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(AssignmentResponse.from(assignment));
+    }
+
+    @PostMapping("/assignments")
+    public ResponseEntity<AssignmentResponse> createAssignment(
+            @Valid @RequestBody AssignmentCreateWithMemberRequest request
+    ) {
+        Assignment assignment = assignmentService.createAssignment(
+                request.getMemberId(),
+                request.toAssignmentCreateRequest()
+        );
         return ResponseEntity.status(HttpStatus.CREATED).body(AssignmentResponse.from(assignment));
     }
 
